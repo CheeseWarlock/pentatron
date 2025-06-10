@@ -27,7 +27,7 @@ export const PentatonicScaleBuilder = ({ selectedNotes: initialSelectedNotes = [
     setSelectedNotes(prev => {
       const newSelection = prev.includes(noteIndex)
         ? prev.filter(n => n !== noteIndex)
-        : [...prev, noteIndex];
+        : [...prev, noteIndex].sort((a, b) => a - b);
       return newSelection;
     });
   };
@@ -51,11 +51,11 @@ export const PentatonicScaleBuilder = ({ selectedNotes: initialSelectedNotes = [
             className={`absolute w-10 h-10 rounded-md border-none cursor-pointer 
                       flex items-center justify-center text-sm font-bold
                       transition-all duration-200 ease-in-out
-                      ${selectedNotes.includes(noteIndex)
+                      ${selectedNotes.includes(noteIndex + 1)
                         ? 'bg-blue-500 text-white border-blue-600 hover:bg-blue-600'
                         : 'bg-white text-gray-700 border-gray-700 hover:bg-gray-100'
                       }`}
-            onClick={() => handleNoteClick(noteIndex)}
+            onClick={() => handleNoteClick(noteIndex + 1)}
             style={{
               transform: `rotate(${((noteIndex + rotate) * 360) / 12}deg) translate(120px) rotate(${-((noteIndex + rotate) * 360) / 12}deg)`,
             }}

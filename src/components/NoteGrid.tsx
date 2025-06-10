@@ -1,5 +1,5 @@
-import PentatonicScale from "./PentatonicScale";
-import Note from "./Note";
+import PentatonicScale from "../PentatonicScale";
+import Note from "../Note";
 
 const PATTERN_LENGTH = 1;
 

@@ -1,4 +1,4 @@
-type Semitones = [number, number, number, number];
+export type Semitones = [number, number, number, number];
 
 /**
  * A pentatonic scale.
@@ -17,13 +17,14 @@ class PentatonicScale {
    * Get all notes in this scale between the given frequencies.
    */
   getNotes(from: number, to: number) {
+    const semitonesWithRoot = [0, ...this.semitones];
     const notes: number[] = [];
     let currentOctaveStart = this.root;
     while (currentOctaveStart > from) {
       currentOctaveStart /= 2;
     }
     while (currentOctaveStart < to) {
-      this.semitones.forEach(semitone => {
+      semitonesWithRoot.forEach(semitone => {
         const candidate = currentOctaveStart * Math.pow(2, semitone / 12);
         if (candidate >= from && candidate < to) {
           notes.push(candidate);
