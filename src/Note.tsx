@@ -1,12 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Synth } from "tone";
 
-class Blah {
-  constructor() {
-    console.log('Blah constructor');
-  }
-}
-
 function Note({frequency}: {frequency: number}) {
   const [isPlaying, setIsPlaying] = useState(false);
   const synth = useMemo<Synth>(() => new Synth().toDestination(), []);
@@ -28,7 +22,7 @@ function Note({frequency}: {frequency: number}) {
     }
   }
 
-  return <div className={`text-white text-2xl rounded-full p-2 ${isPlaying ? 'bg-red-600' : 'bg-red-950'}`} onMouseOver={play}>{frequency.toFixed(1)}hz</div>;
+  return <div className={`text-white text-sm rounded-full p-2 w-12 h-12 ${isPlaying ? 'bg-red-600' : 'bg-red-950'}`} onMouseOver={play}>{frequency.toFixed(1)}</div>;
 }
 
 export default Note;

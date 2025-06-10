@@ -1,8 +1,14 @@
+type Semitones = [number, number, number, number];
+
+/**
+ * A pentatonic scale.
+ * Consists of 5 notes: the root and the four semitones.
+ */
 class PentatonicScale {
-  private semitones: number[] = [];
+  private semitones: Semitones;
   private root: number;
 
-  constructor(root: number, semitones: number[]) {
+  constructor(root: number, semitones: Semitones) {
     this.root = root;
     this.semitones = semitones;
   }
