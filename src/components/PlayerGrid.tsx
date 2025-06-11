@@ -1,16 +1,24 @@
 import { useMemo, useRef, useEffect, useState } from "react";
 import PentatonicScale from "../PentatonicScale";
 import NoteLight from "./NoteLight";
-import { FMSynth, Loop, getTransport, PolySynth } from "tone";
+import { Synth, Loop, getTransport, PolySynth } from "tone";
 
 const PATTERN_LENGTH = 16;
 const PITCH_COUNT = 10;
 
-const PlayerGrid = ({ scale }: { scale: PentatonicScale }) => {
-  const [noteGrid, setNoteGrid] = useState<boolean[][]>(Array.from({ length: scale.getNotes(250, 1000).length }, () => Array(PATTERN_LENGTH).fill(false)));
+const initialNoteGrid = Array.from({ length: PITCH_COUNT }, () => Array(PATTERN_LENGTH).fill(false));
+[[0, 9], [2, 8], [4, 7], [6, 6], [8, 5]].forEach(([col, row]) => {
+  if (row !== undefined && col !== undefined && initialNoteGrid[row] !== undefined) {
+    initialNoteGrid[row][col] = true;
+  }
+});
+
+const PlayerGrid = ({ scale, bpm }: { scale: PentatonicScale, bpm: number }) => {
+  const [noteGrid, setNoteGrid] = useState<boolean[][]>(initialNoteGrid);
   const scaleRef = useRef(scale);
   const noteGridRef = useRef(noteGrid);
-  getTransport().bpm.value = 80;
+  const [activeColumn, setActiveColumn] = useState<number | null>(null);
+  getTransport().bpm.value = bpm;
   
   useEffect(() => {
     scaleRef.current = scale;
@@ -20,20 +28,21 @@ const PlayerGrid = ({ scale }: { scale: PentatonicScale }) => {
   }, [noteGrid]);
 
   const updateNoteGrid = (row: number, col: number, value: boolean) => {
-    console.log("Setting note grid", row, col, value);
+    const countInThisColumn = noteGrid.map(row => row[col]).filter(Boolean).length;
+    if (value && countInThisColumn >= 3) return;
     const newNoteGrid = noteGrid.map((row) => [...row]);
     if (newNoteGrid[row] === undefined) return;
 
     newNoteGrid[row][col] = value;
-    console.log("New note grid", newNoteGrid);
     setNoteGrid(newNoteGrid);
   }
 
   const toneTransport = useMemo(() => {
-    const synthA = new PolySynth(FMSynth).toDestination();
+    const synthA = new PolySynth(Synth).toDestination();
 
     for (let i = 0; i < PATTERN_LENGTH; i++) {
       new Loop((time) => {
+        setActiveColumn(i);
         const noteEnabledForNow = noteGridRef.current.map(row => row[i]);
         const notesToPlay = noteEnabledForNow.map((enabled, index) => enabled ? scaleRef.current.getNotes(250, 1000)[PITCH_COUNT - 1 - index] : null).filter((note) => note !== null);
         notesToPlay.forEach(note => { if (note) synthA.triggerAttackRelease(note, "16n", time, (i % 2 == 0) ? 1 : 0.85); });
@@ -51,8 +60,9 @@ const PlayerGrid = ({ scale }: { scale: PentatonicScale }) => {
           <div key={note} className="flex gap-1">
             {Array.from({ length: PATTERN_LENGTH }, (_, colIndex) => (
               <NoteLight
-                key={`${note}-${colIndex}`}
-                glowing={noteGrid[rowIndex]?.[colIndex] ?? false}
+                key={`${rowIndex}-${colIndex}`}
+                active={noteGrid[rowIndex]?.[colIndex] ?? false}
+                glowing={(noteGrid[rowIndex]?.[colIndex] ?? false) && activeColumn === colIndex}
                 onClick={() => updateNoteGrid(rowIndex, colIndex, !noteGrid[rowIndex]?.[colIndex])}
               />
             ))}

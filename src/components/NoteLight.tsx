@@ -1,15 +1,16 @@
 interface NoteLightProps {
+  active: boolean;
   glowing: boolean;
   onClick: () => void;
 }
 
-export const NoteLight = ({ glowing, onClick }: NoteLightProps) => {
+export const NoteLight = ({ active,glowing, onClick }: NoteLightProps) => {
   return (
     <div 
       className={`w-8 h-8 rounded-full cursor-pointer
                 ${glowing 
-                  ? 'bg-red-500' 
-                  : 'bg-red-900'
+                  ? 'bg-amber-200' 
+                  : active ? 'bg-amber-500' : 'bg-amber-900'
                 }
                 transition-colors
                 ${glowing 
