@@ -2,6 +2,7 @@ import { useMemo, useRef, useEffect, useState } from "react";
 import PentatonicScale from "../PentatonicScale";
 import NoteLight from "./NoteLight";
 import { Synth, Loop, getTransport, PolySynth } from "tone";
+import ActionButton from "./ActionButton";
 
 const PATTERN_LENGTH = 16;
 const PITCH_COUNT = 10;
@@ -54,7 +55,7 @@ const PlayerGrid = ({ scale, bpm }: { scale: PentatonicScale, bpm: number }) => 
 
   return (
     <div className="flex flex-row gap-2">
-      <div onClick={() => toneTransport.start()}>Start the music</div>
+      <ActionButton onClick={() => toneTransport.start()}>Start the music</ActionButton>
       <div className="grid gap-1">
         {notes.map((note, rowIndex) => (
           <div key={note} className="flex gap-1">

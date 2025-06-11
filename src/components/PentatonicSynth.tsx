@@ -5,6 +5,7 @@ import PentatonicScale from '../PentatonicScale';
 import type { Semitones } from '../PentatonicScale';
 import PlayerGrid from './PlayerGrid';
 import BPMSelector from './BPMSelector';
+import Evolver from './Evolver';
 
 export const PentatonicSynth = () => {
   const [root, setRoot] = useState<number>(256);
@@ -36,6 +37,7 @@ export const PentatonicSynth = () => {
         />
       </div>
       <PlayerGrid scale={scale} bpm={bpm} />
+      <Evolver />
     </div>
   );
 };
