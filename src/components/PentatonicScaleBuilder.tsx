@@ -1,6 +1,10 @@
 import { useState } from 'react';
+import ActionButton from './ActionButton';
+import IndicatorLight from './IndicatorLight';
+import FlatContainer from './FlatContainer';
 
 const SCALE = [
+  "Root",
   "2-",
   "2+",
   "3-",
@@ -21,7 +25,7 @@ interface PentatonicScaleBuilderProps {
 
 export const PentatonicScaleBuilder = ({ selectedNotes: initialSelectedNotes = [], onSet }: PentatonicScaleBuilderProps) => {
   const [selectedNotes, setSelectedNotes] = useState<number[]>(initialSelectedNotes);
-  const rotate = -2;
+  const rotate = -3;
 
   const handleNoteClick = (noteIndex: number) => {
     setSelectedNotes(prev => {
@@ -39,56 +43,60 @@ export const PentatonicScaleBuilder = ({ selectedNotes: initialSelectedNotes = [
   };
 
   const handleResetClick = () => {
-    setSelectedNotes(initialSelectedNotes);
+    if (selectedNotes.length === 4) {
+      setSelectedNotes(initialSelectedNotes);
+    }
   };
 
   return (
-    <div className="w-[400px] h-[400px] flex justify-center items-center bg-gray-400 rounded-lg shadow-md">
-      <div className="relative w-[300px] h-[300px] flex justify-center items-center">
-        {SCALE.map((name, noteIndex) => (
-          <button
-            key={noteIndex}
-            className={`absolute w-10 h-10 rounded-md border-none cursor-pointer 
-                      flex items-center justify-center text-sm font-bold
-                      transition-all duration-200 ease-in-out
-                      ${selectedNotes.includes(noteIndex + 1)
-                        ? 'bg-blue-500 text-white border-blue-600 hover:bg-blue-600'
-                        : 'bg-white text-gray-700 border-gray-700 hover:bg-gray-100'
-                      }`}
-            onClick={() => handleNoteClick(noteIndex + 1)}
-            style={{
-              transform: `rotate(${((noteIndex + rotate) * 360) / 12}deg) translate(120px) rotate(${-((noteIndex + rotate) * 360) / 12}deg)`,
-            }}
-          >
-            {name}
-          </button>
-        ))}
-        <div className="absolute w-10 h-10 rounded-md border-2 flex items-center justify-center text-sm font-bold top-[10px]">Root</div>
-        <div className="flex flex-col gap-2">
-          <button
-            onClick={handleSetClick}
-            disabled={selectedNotes.length !== 4}
-            className={`w-16 h-16 rounded-full border-2 font-bold text-lg
-                      transition-all duration-200 ease-in-out
-                      ${selectedNotes.length === 4
-                        ? 'bg-green-500 text-white border-green-600 hover:bg-green-600 cursor-pointer'
-                        : 'bg-gray-300 text-gray-500 border-gray-400 cursor-not-allowed'
-                      }`}
-          >
-            Set
-          </button>
-          <button
-            onClick={handleResetClick}
-            className="flex justify-center items-center
-                      w-16 h-8 rounded-full border-2 font-bold text-sm
-                     bg-red-500 text-white border-red-600 hover:bg-red-600
-                     transition-all duration-200 ease-in-out"
-          >
-            Reset
-          </button>
+    <FlatContainer title="Scale">
+      <div className="w-64 h-64 flex flex-col justify-center items-center rounded-lg shadow-md">
+        <div className="relative w-[300px] h-[300px] flex justify-center items-center">
+          {SCALE.map((_name, noteIndex) => (
+            <>
+              {noteIndex === 0 &&
+                <div
+                  className="w-10 h-10 rounded-md border-2 flex items-center justify-center text-sm font-bold"
+                  style={{
+                    position: 'absolute',
+                    transform: `rotate(${((noteIndex + rotate) * 360) / 12}deg) translate(120px) rotate(${-((noteIndex + rotate) * 360) / 12}deg)`,
+                  }}
+                >Root</div>}
+              {noteIndex > 0 &&
+                <ActionButton
+                  halfWidth={true}
+                  key={noteIndex}
+                  onClick={() => handleNoteClick(noteIndex)}
+                  angle={((270 + 360) - noteIndex * 30) % 360}
+                  style={{
+                    position: 'absolute',
+                    transform: `rotate(${((noteIndex + rotate) * 360) / 12}deg) translate(120px)`,
+                  }}
+                />
+              }
+              <IndicatorLight isOn={noteIndex === 0 || selectedNotes.includes(noteIndex)} style={{
+                position: 'absolute',
+                transform: `rotate(${((noteIndex + rotate) * 360) / 12}deg) translate(80px) rotate(${-((noteIndex + rotate) * 360) / 12}deg)`,
+              }} />
+            </>
+          ))}
         </div>
       </div>
-    </div>
+      <div className="flex flex-row mt-4 gap-2 w-full justify-between items-center px-6">
+        <div className="flex flex-row gap-2 items-center">
+          <ActionButton onClick={handleSetClick} />
+          <span>Set</span>
+        </div>
+        <div className="flex flex-row gap-2 items-center">
+          <IndicatorLight isOn={selectedNotes.length === 4} />
+          <span>Valid</span>
+        </div>
+      </div>
+      <div className="flex flex-row gap-2 w-full px-6">
+        <ActionButton onClick={handleResetClick} />
+        <span>Reset</span>
+      </div>
+    </FlatContainer>
   );
 };
 

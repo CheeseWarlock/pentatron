@@ -96,7 +96,7 @@ export const PentatonicSynth = () => {
         onNoteGridUpdate={handleNoteGridUpdate}
         onCycleFinished={maybeEvolveNoteGrid}
       />
-      <Evolver onAuto={() => setAutoEvolveNoteGrid(!autoEvolveNoteGrid)} onTrigger={evolveNoteGrid} name="Evolver" />
+      <Evolver onAuto={() => setAutoEvolveNoteGrid(!autoEvolveNoteGrid)} onTrigger={evolveNoteGrid} name="Evolve Ptn." />
     </div>
   );
 };

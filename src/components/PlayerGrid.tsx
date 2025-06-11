@@ -3,6 +3,8 @@ import PentatonicScale from "../PentatonicScale";
 import NoteLight from "./NoteLight";
 import { Synth, Loop, getTransport, PolySynth } from "tone";
 import ActionButton from "./ActionButton";
+import FlatContainer from "./FlatContainer";
+import IndicatorLight from "./IndicatorLight";
 
 const PATTERN_LENGTH = 16;
 const PITCH_COUNT = 10;
@@ -19,6 +21,7 @@ const PlayerGrid = ({ scale, bpm, noteGrid, onNoteGridUpdate, onCycleFinished }:
   const noteGridRef = useRef(noteGrid);
   const callbackRef = useRef(onCycleFinished);
   const [activeColumn, setActiveColumn] = useState<number | null>(null);
+  const [playing, setPlaying] = useState<boolean>(false);
   getTransport().bpm.value = bpm;
   
   useEffect(() => {
@@ -50,9 +53,25 @@ const PlayerGrid = ({ scale, bpm, noteGrid, onNoteGridUpdate, onCycleFinished }:
   }, []);
   const notes = scale.getNotes(250, 1000);
 
+  const togglePlaying = () => {
+    if (toneTransport.state === "stopped") {
+      toneTransport.start();
+      setPlaying(true);
+    } else {
+      toneTransport.stop();
+      setPlaying(false);
+    }
+  }
+
   return (
     <div className="flex flex-row">
-      <ActionButton onClick={() => toneTransport.start()}>Start the music</ActionButton>
+      <FlatContainer title="Play">
+        <div className="flex flex-row items-center gap-2">
+          <ActionButton onClick={togglePlaying} />
+          <IndicatorLight isOn={playing} />
+        </div>
+      </FlatContainer>
+      
       <div className="grid">
         {notes.map((note, rowIndex) => (
           <div key={note} className="flex">

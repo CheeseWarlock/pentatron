@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@source inline("bg-linear-{0..360..15}");
 
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
