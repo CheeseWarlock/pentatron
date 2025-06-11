@@ -38,23 +38,46 @@ const evolveGrid = (noteGrid: boolean[][]) => {
   return newNoteGrid;
 }
 
+const evolveTones = (semitones: Semitones) => {
+  const newTones = [...semitones];
+  const tonesByState = (new Array(11)).fill(0).map((_, index) => {
+    return { idx: index + 1, state: semitones.includes(index + 1) };
+  });
+  const trueTones = tonesByState.filter((tone) => tone.state);
+  const falseTones = tonesByState.filter((tone) => !tone.state);
+
+  const toneToAdd = falseTones[Math.floor(Math.random() * falseTones.length)];
+  const toneToRemove = trueTones[Math.floor(Math.random() * trueTones.length)];
+
+  if (toneToAdd !== undefined && toneToRemove !== undefined) {
+    newTones.push(toneToAdd.idx);
+    newTones.splice(newTones.indexOf(toneToRemove.idx), 1);
+  }
+  return newTones.sort((a, b) => a - b);
+}
+
 export const PentatonicSynth = () => {
   const [root, setRoot] = useState<number>(256);
   const [bpm, setBPM] = useState<number>(80);
-  const [selectedNotes, setSelectedNotes] = useState<number[]>([2, 4, 7, 11]);
+  const [semitones, setSemitones] = useState<number[]>([2, 4, 7, 11]);
   const [noteGrid, setNoteGrid] = useState<boolean[][]>(initialNoteGrid);
   const [autoEvolveNoteGrid, setAutoEvolveNoteGrid] = useState<boolean>(false);
+  const [autoEvolveTones, setAutoEvolveTones] = useState<boolean>(false);
 
   const handleRootSet = (newRoot: number) => {
     setRoot(newRoot);
   };
 
   const handleScaleSet = (notes: number[]) => {
-    setSelectedNotes(notes);
+    setSemitones(notes);
   };
 
   const handleBPMSet = (newBPM: number) => {
     setBPM(newBPM);
+  };
+
+  const doEvolveTones = () => {
+    setSemitones(evolveTones(semitones as Semitones));
   };
 
   const handleNoteGridUpdate = (row: number, col: number, value: boolean) => {
@@ -71,13 +94,16 @@ export const PentatonicSynth = () => {
     setNoteGrid(evolveGrid(noteGrid));
   };
 
-  const maybeEvolveNoteGrid = () => {
+  const maybeEvolve = () => {
     if (autoEvolveNoteGrid) {
       evolveNoteGrid();
     }
+    if (autoEvolveTones) {
+      doEvolveTones();
+    }
   };
 
-  const scale: PentatonicScale = new PentatonicScale(root, selectedNotes as Semitones);
+  const scale: PentatonicScale = new PentatonicScale(root, semitones as Semitones);
 
   return (
     <div className="flex flex-col items-center gap-8 p-8">
@@ -85,7 +111,7 @@ export const PentatonicSynth = () => {
         <RootSelector onSet={handleRootSet} />
         <BPMSelector onSet={handleBPMSet} />
         <PentatonicScaleBuilder 
-          selectedNotes={selectedNotes}
+          initialSelectedNotes={semitones}
           onSet={handleScaleSet}
         />
       </div>
@@ -94,9 +120,10 @@ export const PentatonicSynth = () => {
         bpm={bpm} 
         noteGrid={noteGrid}
         onNoteGridUpdate={handleNoteGridUpdate}
-        onCycleFinished={maybeEvolveNoteGrid}
+        onCycleFinished={maybeEvolve}
       />
       <Evolver onAuto={() => setAutoEvolveNoteGrid(!autoEvolveNoteGrid)} onTrigger={evolveNoteGrid} name="Evolve Ptn." />
+      <Evolver onAuto={() => setAutoEvolveTones(!autoEvolveTones)} onTrigger={doEvolveTones} name="Evolve Scl." />
     </div>
   );
 };

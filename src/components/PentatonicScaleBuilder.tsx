@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ActionButton from './ActionButton';
 import IndicatorLight from './IndicatorLight';
 import FlatContainer from './FlatContainer';
@@ -19,12 +19,13 @@ const SCALE = [
 ]
 
 interface PentatonicScaleBuilderProps {
-  selectedNotes?: number[];
+  initialSelectedNotes: number[];
   onSet?: (selectedNotes: number[]) => void;
 }
 
-export const PentatonicScaleBuilder = ({ selectedNotes: initialSelectedNotes = [], onSet }: PentatonicScaleBuilderProps) => {
+export const PentatonicScaleBuilder = ({ initialSelectedNotes, onSet }: PentatonicScaleBuilderProps) => {
   const [selectedNotes, setSelectedNotes] = useState<number[]>(initialSelectedNotes);
+  const [modified, setModified] = useState<boolean>(false);
   const rotate = -3;
 
   const handleNoteClick = (noteIndex: number) => {
@@ -32,6 +33,7 @@ export const PentatonicScaleBuilder = ({ selectedNotes: initialSelectedNotes = [
       const newSelection = prev.includes(noteIndex)
         ? prev.filter(n => n !== noteIndex)
         : [...prev, noteIndex].sort((a, b) => a - b);
+      setModified(true);
       return newSelection;
     });
   };
@@ -39,14 +41,20 @@ export const PentatonicScaleBuilder = ({ selectedNotes: initialSelectedNotes = [
   const handleSetClick = () => {
     if (selectedNotes.length === 4) {
       onSet?.(selectedNotes);
+      setModified(false);
     }
   };
 
   const handleResetClick = () => {
-    if (selectedNotes.length === 4) {
+    setSelectedNotes(initialSelectedNotes);
+    setModified(false);
+  };
+
+  useEffect(() => {
+    if (!modified) {
       setSelectedNotes(initialSelectedNotes);
     }
-  };
+  }, [initialSelectedNotes, modified]);
 
   return (
     <FlatContainer title="Scale">
@@ -74,7 +82,7 @@ export const PentatonicScaleBuilder = ({ selectedNotes: initialSelectedNotes = [
                   }}
                 />
               }
-              <IndicatorLight isOn={noteIndex === 0 || selectedNotes.includes(noteIndex)} style={{
+              <IndicatorLight isOn={noteIndex === 0 || (modified ? selectedNotes : initialSelectedNotes).includes(noteIndex)} style={{
                 position: 'absolute',
                 transform: `rotate(${((noteIndex + rotate) * 360) / 12}deg) translate(80px) rotate(${-((noteIndex + rotate) * 360) / 12}deg)`,
               }} />
@@ -92,9 +100,15 @@ export const PentatonicScaleBuilder = ({ selectedNotes: initialSelectedNotes = [
           <span>Valid</span>
         </div>
       </div>
-      <div className="flex flex-row gap-2 w-full px-6">
-        <ActionButton onClick={handleResetClick} />
-        <span>Reset</span>
+      <div className="flex flex-row mt-4 gap-2 w-full justify-between items-center px-6">
+        <div className="flex flex-row gap-2 items-center">
+          <ActionButton onClick={handleResetClick} />
+          <span>Reset</span>
+        </div>
+        <div className="flex flex-row gap-2 items-center">
+        <IndicatorLight isOn={modified} />
+          <span>Modified</span>
+        </div>
       </div>
     </FlatContainer>
   );

@@ -8,7 +8,7 @@ export const NoteLight = ({ active,glowing, onClick }: NoteLightProps) => {
   return (
     <div className="p-1 cursor-pointer" onClick={onClick}>
       <div
-        style={ { boxShadow: glowing ? '0 0px 6px 3px var(--color-amber-500)' : 'none' } }
+        style={ { boxShadow: glowing ? '0 0px 6px 3px var(--color-amber-400)' : active ? '0 0px 4px 2px var(--color-amber-600)' : 'none' } }
         className={`w-8 h-8 rounded-full
                   ${glowing 
                     ? 'bg-amber-200' 
