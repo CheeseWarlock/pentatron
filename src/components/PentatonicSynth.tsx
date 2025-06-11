@@ -4,6 +4,7 @@ import RootSelector from './RootSelector';
 import SimpleNotePlayer from './SimpleNotePlayer';
 import PentatonicScale from '../PentatonicScale';
 import type { Semitones } from '../PentatonicScale';
+import PlayerGrid from './PlayerGrid';
 
 export const PentatonicSynth = () => {
   const [root, setRoot] = useState<number>(256);
@@ -29,6 +30,7 @@ export const PentatonicSynth = () => {
         />
       </div>
       <SimpleNotePlayer scale={scale} />
+      <PlayerGrid scale={scale} />
     </div>
   );
 };
