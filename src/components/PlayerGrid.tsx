@@ -6,18 +6,18 @@ import ActionButton from "./ActionButton";
 
 const PATTERN_LENGTH = 16;
 const PITCH_COUNT = 10;
+interface PlayerGridProps {
+  scale: PentatonicScale;
+  bpm: number;
+  noteGrid: boolean[][];
+  onNoteGridUpdate: (row: number, col: number, value: boolean) => void;
+  onCycleFinished: () => void;
+}
 
-const initialNoteGrid = Array.from({ length: PITCH_COUNT }, () => Array(PATTERN_LENGTH).fill(false));
-[[0, 9], [2, 8], [4, 7], [6, 6], [8, 5]].forEach(([col, row]) => {
-  if (row !== undefined && col !== undefined && initialNoteGrid[row] !== undefined) {
-    initialNoteGrid[row][col] = true;
-  }
-});
-
-const PlayerGrid = ({ scale, bpm }: { scale: PentatonicScale, bpm: number }) => {
-  const [noteGrid, setNoteGrid] = useState<boolean[][]>(initialNoteGrid);
+const PlayerGrid = ({ scale, bpm, noteGrid, onNoteGridUpdate, onCycleFinished }: PlayerGridProps) => {
   const scaleRef = useRef(scale);
   const noteGridRef = useRef(noteGrid);
+  const callbackRef = useRef(onCycleFinished);
   const [activeColumn, setActiveColumn] = useState<number | null>(null);
   getTransport().bpm.value = bpm;
   
@@ -27,19 +27,16 @@ const PlayerGrid = ({ scale, bpm }: { scale: PentatonicScale, bpm: number }) => 
   useEffect(() => {
     noteGridRef.current = noteGrid;
   }, [noteGrid]);
-
-  const updateNoteGrid = (row: number, col: number, value: boolean) => {
-    const countInThisColumn = noteGrid.map(row => row[col]).filter(Boolean).length;
-    if (value && countInThisColumn >= 3) return;
-    const newNoteGrid = noteGrid.map((row) => [...row]);
-    if (newNoteGrid[row] === undefined) return;
-
-    newNoteGrid[row][col] = value;
-    setNoteGrid(newNoteGrid);
-  }
+  useEffect(() => {
+    callbackRef.current = onCycleFinished;
+  }, [onCycleFinished]);
 
   const toneTransport = useMemo(() => {
     const synthA = new PolySynth(Synth).toDestination();
+
+    new Loop((_time) => {
+      callbackRef.current();
+    }, "1m").start(`0:0:15`);
 
     for (let i = 0; i < PATTERN_LENGTH; i++) {
       new Loop((time) => {
@@ -54,17 +51,17 @@ const PlayerGrid = ({ scale, bpm }: { scale: PentatonicScale, bpm: number }) => 
   const notes = scale.getNotes(250, 1000);
 
   return (
-    <div className="flex flex-row gap-2">
+    <div className="flex flex-row">
       <ActionButton onClick={() => toneTransport.start()}>Start the music</ActionButton>
-      <div className="grid gap-1">
+      <div className="grid">
         {notes.map((note, rowIndex) => (
-          <div key={note} className="flex gap-1">
+          <div key={note} className="flex">
             {Array.from({ length: PATTERN_LENGTH }, (_, colIndex) => (
               <NoteLight
                 key={`${rowIndex}-${colIndex}`}
                 active={noteGrid[rowIndex]?.[colIndex] ?? false}
                 glowing={(noteGrid[rowIndex]?.[colIndex] ?? false) && activeColumn === colIndex}
-                onClick={() => updateNoteGrid(rowIndex, colIndex, !noteGrid[rowIndex]?.[colIndex])}
+                onClick={() => onNoteGridUpdate(rowIndex, colIndex, !noteGrid[rowIndex]?.[colIndex])}
               />
             ))}
           </div>
