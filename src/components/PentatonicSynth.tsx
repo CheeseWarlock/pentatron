@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import PentatonicScaleBuilder from './PentatonicScaleBuilder';
 import RootSelector from './RootSelector';
-import SimpleNotePlayer from './SimpleNotePlayer';
 import PentatonicScale from '../PentatonicScale';
 import type { Semitones } from '../PentatonicScale';
 import PlayerGrid from './PlayerGrid';
@@ -29,7 +28,6 @@ export const PentatonicSynth = () => {
           onSet={handleScaleSet}
         />
       </div>
-      <SimpleNotePlayer scale={scale} />
       <PlayerGrid scale={scale} />
     </div>
   );
