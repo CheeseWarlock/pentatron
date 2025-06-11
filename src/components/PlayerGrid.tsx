@@ -1,10 +1,10 @@
 import { useMemo, useRef, useEffect, useState } from "react";
 import PentatonicScale from "../PentatonicScale";
-import NoteLight from "./NoteLight";
 import { Synth, Loop, getTransport, PolySynth } from "tone";
 import ActionButton from "./ActionButton";
 import FlatContainer from "./FlatContainer";
 import IndicatorLight from "./IndicatorLight";
+import PlayerGridColumn from "./PlayerGridColumn";
 
 const PATTERN_LENGTH = 16;
 const PITCH_COUNT = 10;
@@ -51,7 +51,7 @@ const PlayerGrid = ({ scale, bpm, noteGrid, onNoteGridUpdate, onCycleFinished }:
     }
     return getTransport();
   }, []);
-  const notes = scale.getNotes(250, 1000).reverse();
+  // const notes = scale.getNotes(250, 1000).reverse();
 
   const togglePlaying = () => {
     if (toneTransport.state === "stopped") {
@@ -85,16 +85,12 @@ const PlayerGrid = ({ scale, bpm, noteGrid, onNoteGridUpdate, onCycleFinished }:
         {/* Note grid */}
         <div className="grid grid-cols-[repeat(16,1fr)]">
           {Array.from({ length: PATTERN_LENGTH }, (_, colIndex) => (
-            <div key={`col-${colIndex}`} className="flex flex-col">
-              {notes.map((_note, rowIndex) => (
-                <NoteLight
-                  key={`${rowIndex}-${colIndex}`}
-                  active={noteGrid[rowIndex]?.[colIndex] ?? false}
-                  glowing={(noteGrid[rowIndex]?.[colIndex] ?? false) && activeColumn === colIndex}
-                  onClick={() => onNoteGridUpdate(rowIndex, colIndex, !noteGrid[rowIndex]?.[colIndex])}
-                />
-              ))}
-            </div>
+            <PlayerGridColumn
+              key={`col-${colIndex}`}
+              column={colIndex}
+              activeNotes={noteGrid.map(row => row[colIndex] ?? false)}
+              isCurrentColumn={activeColumn === colIndex}
+              onNoteGridUpdate={onNoteGridUpdate} />
           ))}
         </div>
       </div>
