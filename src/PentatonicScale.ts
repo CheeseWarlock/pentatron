@@ -34,6 +34,22 @@ class PentatonicScale {
     }
     return notes;
   }
+
+  getRoots(from: number, to: number) {
+    const notes: number[] = [];
+    let currentOctaveStart = this.root;
+    while (currentOctaveStart > from) {
+      currentOctaveStart /= 2;
+    }
+    while (currentOctaveStart < to) {
+      const candidate = currentOctaveStart;
+      if (candidate >= from && candidate < to) {
+        notes.push(candidate);
+      }
+      currentOctaveStart *= 2;
+    }
+    return notes;
+  }
 }
 
 export default PentatonicScale;

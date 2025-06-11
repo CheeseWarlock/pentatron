@@ -60,33 +60,32 @@ export const PentatonicScaleBuilder = ({ initialSelectedNotes, onSet }: Pentaton
     <FlatContainer title="Scale">
       <div className="w-64 h-64 flex flex-col justify-center items-center rounded-lg shadow-md">
         <div className="relative w-[300px] h-[300px] flex justify-center items-center">
+          {SCALE.map((_name, noteIndex) => 
+            noteIndex === 0 ?
+              <div
+                className="w-10 h-10 rounded-md border-2 flex items-center justify-center text-sm font-bold"
+                key={`${noteIndex}-root`}
+                style={{
+                  position: 'absolute',
+                  transform: `rotate(${((noteIndex + rotate) * 360) / 12}deg) translate(120px) rotate(${-((noteIndex + rotate) * 360) / 12}deg)`,
+                }}
+              >Root</div> :
+              <ActionButton
+                halfWidth={true}
+                key={`${noteIndex}-button`}
+                onClick={() => handleNoteClick(noteIndex)}
+                angle={((270 + 360) - noteIndex * 30) % 360}
+                style={{
+                  position: 'absolute',
+                  transform: `rotate(${((noteIndex + rotate) * 360) / 12}deg) translate(120px)`,
+                }}
+              />
+          )}
           {SCALE.map((_name, noteIndex) => (
-            <>
-              {noteIndex === 0 &&
-                <div
-                  className="w-10 h-10 rounded-md border-2 flex items-center justify-center text-sm font-bold"
-                  style={{
-                    position: 'absolute',
-                    transform: `rotate(${((noteIndex + rotate) * 360) / 12}deg) translate(120px) rotate(${-((noteIndex + rotate) * 360) / 12}deg)`,
-                  }}
-                >Root</div>}
-              {noteIndex > 0 &&
-                <ActionButton
-                  halfWidth={true}
-                  key={noteIndex}
-                  onClick={() => handleNoteClick(noteIndex)}
-                  angle={((270 + 360) - noteIndex * 30) % 360}
-                  style={{
-                    position: 'absolute',
-                    transform: `rotate(${((noteIndex + rotate) * 360) / 12}deg) translate(120px)`,
-                  }}
-                />
-              }
-              <IndicatorLight isOn={noteIndex === 0 || (modified ? selectedNotes : initialSelectedNotes).includes(noteIndex)} style={{
+              <IndicatorLight key={`${noteIndex}-indicator`} isOn={noteIndex === 0 || (modified ? selectedNotes : initialSelectedNotes).includes(noteIndex)} style={{
                 position: 'absolute',
                 transform: `rotate(${((noteIndex + rotate) * 360) / 12}deg) translate(80px) rotate(${-((noteIndex + rotate) * 360) / 12}deg)`,
               }} />
-            </>
           ))}
         </div>
       </div>
