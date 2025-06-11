@@ -52,7 +52,6 @@ const PlayerGrid = ({ scale, bpm, noteGrid, onNoteGridUpdate, onCycleFinished }:
     return getTransport();
   }, []);
   const notes = scale.getNotes(250, 1000).reverse();
-  const roots = scale.getRoots(250, 1000);
 
   const togglePlaying = () => {
     if (toneTransport.state === "stopped") {
@@ -73,33 +72,31 @@ const PlayerGrid = ({ scale, bpm, noteGrid, onNoteGridUpdate, onCycleFinished }:
         </div>
       </FlatContainer>
       
-      <div className="grid grid-cols-[auto_repeat(16,1fr)]">
-        {/* Top-left corner spacer */}
-        <div className="w-18">Root</div>
-        
+      <div className="grid grid-rows-[auto_1fr]">
         {/* Column indicators */}
-        {Array.from({ length: PATTERN_LENGTH }, (_, i) => (
-          <div key={`col-${i}`} className="flex items-center justify-center">
-            <IndicatorLight isOn={activeColumn === i} />
-          </div>
-        ))}
+        <div className="grid grid-cols-[repeat(16,1fr)]">
+          {Array.from({ length: PATTERN_LENGTH }, (_, i) => (
+            <div key={`col-${i}`} className="flex items-center justify-center">
+              <IndicatorLight isOn={activeColumn === i} />
+            </div>
+          ))}
+        </div>
 
         {/* Note grid */}
-        {notes.map((note, rowIndex) => (
-          <div key={note} className="contents">
-            <div className="flex items-center justify-center">
-              <IndicatorLight isOn={roots.includes(note)} />
+        <div className="grid grid-cols-[repeat(16,1fr)]">
+          {Array.from({ length: PATTERN_LENGTH }, (_, colIndex) => (
+            <div key={`col-${colIndex}`} className="flex flex-col">
+              {notes.map((_note, rowIndex) => (
+                <NoteLight
+                  key={`${rowIndex}-${colIndex}`}
+                  active={noteGrid[rowIndex]?.[colIndex] ?? false}
+                  glowing={(noteGrid[rowIndex]?.[colIndex] ?? false) && activeColumn === colIndex}
+                  onClick={() => onNoteGridUpdate(rowIndex, colIndex, !noteGrid[rowIndex]?.[colIndex])}
+                />
+              ))}
             </div>
-            {Array.from({ length: PATTERN_LENGTH }, (_, colIndex) => (
-              <NoteLight
-                key={`${rowIndex}-${colIndex}`}
-                active={noteGrid[rowIndex]?.[colIndex] ?? false}
-                glowing={(noteGrid[rowIndex]?.[colIndex] ?? false) && activeColumn === colIndex}
-                onClick={() => onNoteGridUpdate(rowIndex, colIndex, !noteGrid[rowIndex]?.[colIndex])}
-              />
-            ))}
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );
