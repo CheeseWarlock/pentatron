@@ -44,7 +44,7 @@ const PlayerGrid = ({ scale, bpm, noteGrid, onNoteGridUpdate, onCycleFinished }:
     for (let i = 0; i < PATTERN_LENGTH; i++) {
       new Loop((time) => {
         setActiveColumn(i);
-        const noteEnabledForNow = noteGridRef.current.map(row => row[i]);
+        const noteEnabledForNow = noteGridRef.current[i]!;
         const notesToPlay = noteEnabledForNow.map((enabled, index) => enabled ? scaleRef.current.getNotes(250, 1000)[PITCH_COUNT - 1 - index] : null).filter((note) => note !== null);
         notesToPlay.forEach(note => { if (note) synthA.triggerAttackRelease(note, "16n", time, (i % 2 == 0) ? 1 : 0.85); });
       }, "1m").start(`0:0:${i}`);
@@ -88,7 +88,7 @@ const PlayerGrid = ({ scale, bpm, noteGrid, onNoteGridUpdate, onCycleFinished }:
             <PlayerGridColumn
               key={`col-${colIndex}`}
               column={colIndex}
-              activeNotes={noteGrid.map(row => row[colIndex] ?? false)}
+              activeNotes={noteGrid[colIndex] ?? []}
               isCurrentColumn={activeColumn === colIndex}
               onNoteGridUpdate={onNoteGridUpdate} />
           ))}

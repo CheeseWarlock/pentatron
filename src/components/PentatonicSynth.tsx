@@ -10,11 +10,10 @@ import Evolver from './Evolver';
 const PATTERN_LENGTH = 16;
 const PITCH_COUNT = 10;
 
-const initialNoteGrid = Array.from({ length: PITCH_COUNT }, () => Array(PATTERN_LENGTH).fill(false));
+const initialNoteGrid = Array.from({ length: PATTERN_LENGTH }, () => Array(PITCH_COUNT).fill(false));
 [[0, 9], [2, 8], [4, 7], [6, 6], [8, 5]].forEach(([col, row]) => {
-  if (row !== undefined && col !== undefined && initialNoteGrid[row] !== undefined) {
-    initialNoteGrid[row][col] = true;
-  }
+  if (col == undefined || row == undefined || initialNoteGrid[col] == undefined) return;
+  initialNoteGrid[col]![row] = true;
 });
 
 /** Randomly toggle a note in the grid */
@@ -81,12 +80,16 @@ export const PentatonicSynth = () => {
   };
 
   const handleNoteGridUpdate = (row: number, col: number, value: boolean) => {
-    const countInThisColumn = noteGrid.map(row => row[col]).filter(Boolean).length;
+    const countInThisColumn = noteGrid[col]?.filter(Boolean).length ?? 0;
     if (value && countInThisColumn >= 3) return;
-    const newNoteGrid = noteGrid.map((row) => [...row]);
-    if (newNoteGrid[row] === undefined) return;
 
-    newNoteGrid[row][col] = value;
+    if (noteGrid[col] == undefined) return;
+
+    const newColumn = [...noteGrid[col]!];
+    newColumn[row] = value;
+
+    const newNoteGrid = noteGrid.map((row) => [...row]);
+    newNoteGrid[col] = newColumn;
     setNoteGrid(newNoteGrid);
   };
 
