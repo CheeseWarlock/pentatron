@@ -5,9 +5,9 @@ import ActionButton from "./ActionButton";
 import FlatContainer from "./FlatContainer";
 import IndicatorLight from "./IndicatorLight";
 import NoteLightGrid from "./NoteLightGrid";
+import { PATTERN_LENGTH, PITCH_COUNT } from "./PentatonicSynth";
+import RootIndicatorColumn from "./RootIndicatorColumn";
 
-const PATTERN_LENGTH = 16;
-const PITCH_COUNT = 10;
 interface PlayerGridProps {
   scale: PentatonicScale;
   bpm: number;
@@ -51,7 +51,6 @@ const PlayerGrid = ({ scale, bpm, noteGrid, onNoteGridUpdate, onCycleFinished }:
     }
     return getTransport();
   }, []);
-  // const notes = scale.getNotes(250, 1000).reverse();
 
   const togglePlaying = () => {
     if (toneTransport.state === "stopped") {
@@ -64,8 +63,8 @@ const PlayerGrid = ({ scale, bpm, noteGrid, onNoteGridUpdate, onCycleFinished }:
   }
 
   const noteLightGrid = useMemo(() => {
-    return <NoteLightGrid scale={scale} noteGrid={noteGrid} activeColumn={activeColumn ?? -1} onNoteGridUpdate={onNoteGridUpdate} />
-  }, [scale, noteGrid, activeColumn, onNoteGridUpdate]);
+    return <NoteLightGrid noteGrid={noteGrid} activeColumn={activeColumn ?? -1} onNoteGridUpdate={onNoteGridUpdate} />
+  }, [noteGrid, activeColumn, onNoteGridUpdate]);
 
   return (
     <div className="flex flex-row gap-4">
@@ -75,8 +74,11 @@ const PlayerGrid = ({ scale, bpm, noteGrid, onNoteGridUpdate, onCycleFinished }:
           <IndicatorLight isOn={playing} />
         </div>
       </FlatContainer>
-      
+      <div className="grid grid-cols-17 grid-rows-11 grid-flow-col items-center justify-items-center">
+        <RootIndicatorColumn scale={scale} />
       {noteLightGrid}
+      </div>
+      
     </div>
   );
 };

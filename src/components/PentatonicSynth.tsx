@@ -7,8 +7,8 @@ import PlayerGrid from './PlayerGrid';
 import BPMSelector from './BPMSelector';
 import Evolver from './Evolver';
 
-const PATTERN_LENGTH = 16;
-const PITCH_COUNT = 10;
+export const PATTERN_LENGTH = 16;
+export const PITCH_COUNT = 10;
 
 const initialNoteGrid = Array.from({ length: PATTERN_LENGTH }, () => Array(PITCH_COUNT).fill(false));
 [[0, 9], [2, 8], [4, 7], [6, 6], [8, 5]].forEach(([col, row]) => {
