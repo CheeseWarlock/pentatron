@@ -20,20 +20,22 @@ const initialNoteGrid = Array.from({ length: PATTERN_LENGTH }, () => Array(PITCH
 const evolveGrid = (noteGrid: boolean[][]) => {
   let randomRow = Math.floor(Math.random() * PITCH_COUNT);
   const randomCol = Math.floor(Math.random() * PATTERN_LENGTH);
-  const countInThisColumn = noteGrid.map(row => row[randomCol]).filter(Boolean).length;
+
+  if (noteGrid[randomCol] == undefined) return noteGrid;
+  const countInThisColumn = noteGrid[randomCol].filter(Boolean).length;
   
-  const newNoteGrid = noteGrid.map((row) => [...row]);
+  const newNoteGrid = noteGrid.map((col) => [...col]);
   if (countInThisColumn >= 3) {
-    const onInThisColumn = noteGrid.map((row, index) => ({value: row[randomCol], index: index})).filter((item) => item.value);
+    const onInThisColumn = noteGrid[randomCol].map((item, index) => ({value: item, index: index})).filter((item) => item.value);
     const randomOn = onInThisColumn[Math.floor(Math.random() * onInThisColumn.length)];
     if (randomOn !== undefined) {
       randomRow = randomOn.index;
     }
   }
-  if (newNoteGrid[randomRow] === undefined) return noteGrid;
-  const thisColumn = newNoteGrid[randomRow];
+  if (newNoteGrid[randomCol] === undefined) return noteGrid;
+  const thisColumn = newNoteGrid[randomCol];
   if (thisColumn === undefined) return noteGrid;
-  thisColumn[randomCol] = !thisColumn[randomCol];
+  thisColumn[randomRow] = !thisColumn[randomRow];
   return newNoteGrid;
 }
 
