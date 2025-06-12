@@ -4,7 +4,7 @@ import { Synth, Loop, getTransport, PolySynth } from "tone";
 import ActionButton from "./ActionButton";
 import FlatContainer from "./FlatContainer";
 import IndicatorLight from "./IndicatorLight";
-import PlayerGridColumn from "./PlayerGridColumn";
+import NoteLightGrid from "./NoteLightGrid";
 
 const PATTERN_LENGTH = 16;
 const PITCH_COUNT = 10;
@@ -63,6 +63,10 @@ const PlayerGrid = ({ scale, bpm, noteGrid, onNoteGridUpdate, onCycleFinished }:
     }
   }
 
+  const noteLightGrid = useMemo(() => {
+    return <NoteLightGrid noteGrid={noteGrid} activeColumn={activeColumn ?? -1} onNoteGridUpdate={onNoteGridUpdate} />
+  }, [noteGrid, activeColumn, onNoteGridUpdate]);
+
   return (
     <div className="flex flex-row gap-4">
       <FlatContainer title="Play">
@@ -72,28 +76,7 @@ const PlayerGrid = ({ scale, bpm, noteGrid, onNoteGridUpdate, onCycleFinished }:
         </div>
       </FlatContainer>
       
-      <div className="grid grid-rows-[auto_1fr]">
-        {/* Column indicators */}
-        <div className="grid grid-cols-[repeat(16,1fr)]">
-          {Array.from({ length: PATTERN_LENGTH }, (_, i) => (
-            <div key={`col-${i}`} className="flex items-center justify-center">
-              <IndicatorLight isOn={activeColumn === i} />
-            </div>
-          ))}
-        </div>
-
-        {/* Note grid */}
-        <div className="grid grid-cols-[repeat(16,1fr)]">
-          {noteGrid.map((col, colIndex) => (
-            <PlayerGridColumn
-              key={`col-${colIndex}`}
-              column={colIndex}
-              activeNotes={col}
-              isCurrentColumn={activeColumn === colIndex}
-              onNoteGridUpdate={onNoteGridUpdate} />
-          ))}
-        </div>
-      </div>
+      {noteLightGrid}
     </div>
   );
 };

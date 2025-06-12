@@ -1,36 +1,25 @@
-import { useState } from 'react';
 import FlatContainer from './FlatContainer';
-import ActionButton from './ActionButton';
 
 interface RootSelectorProps {
+  root: number;
   onSet?: (root: number) => void;
 }
 
-export const RootSelector = ({ onSet }: RootSelectorProps) => {
-  const [root, setRoot] = useState<number>(256);
-
-  const handleSetClick = () => {
-    onSet?.(root);
-  };
-
+export const RootSelector = ({ root, onSet }: RootSelectorProps) => {
   return (
     <FlatContainer title="Root Freq.">
-      <div className="flex flex-row items-center gap-4">
+      <div className="flex flex-row items-center gap-4 w-40">
         <input
-          type="number"
+          type="range"
           value={root}
           min={256}
           max={512}
           onChange={(e) => {
-            const value = parseInt(e.target.value);
-            if (!isNaN(value)) {
-              setRoot(value);
-            }
+            onSet?.(e.target.valueAsNumber);
           }}
-          className="font-mono w-16 text-2xl p-0 bg-white border-2 border-gray-300 text-gray-900
+          className="w-40 font-mono text-2xl p-0 bg-white border-2 border-gray-300 text-gray-900
                   rounded-lg focus:outline-none focus:border-blue-500"
         />
-        <ActionButton onClick={handleSetClick} />
       </div>
     </FlatContainer>
   );

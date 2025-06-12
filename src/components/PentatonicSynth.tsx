@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import PentatonicScaleBuilder from './PentatonicScaleBuilder';
 import RootSelector from './RootSelector';
 import PentatonicScale from '../PentatonicScale';
@@ -77,9 +77,9 @@ export const PentatonicSynth = () => {
     setBPM(newBPM);
   };
 
-  const doEvolveTones = () => {
+  const doEvolveTones = useCallback(() => {
     setSemitones(evolveTones(semitones as Semitones));
-  };
+  }, [semitones]);
 
   const handleNoteGridUpdate = useMemo(() => {
     return (row: number, col: number, value: boolean) => {
@@ -97,9 +97,9 @@ export const PentatonicSynth = () => {
     };
   }, [noteGrid]);
 
-  const evolveNoteGrid = () => {
+  const evolveNoteGrid = useCallback(() => {
     setNoteGrid(evolveGrid(noteGrid));
-  };
+  }, [noteGrid]);
 
   const maybeEvolve = () => {
     if (autoEvolveNoteGrid) {
@@ -112,15 +112,35 @@ export const PentatonicSynth = () => {
 
   const scale: PentatonicScale = new PentatonicScale(root, semitones as Semitones);
 
+  const psb = useMemo(() => {
+    return <PentatonicScaleBuilder 
+    initialSelectedNotes={semitones}
+    onSet={handleScaleSet}
+  />
+  }, [semitones]);
+
+  const rs = useMemo(() => {
+    return <RootSelector root={root} onSet={handleRootSet} />
+  }, [root]);
+
+  const bps = useMemo(() => {
+    return <BPMSelector bpm={bpm} onSet={handleBPMSet} />
+  }, [bpm]);
+
+  const noteGridEvolver = useMemo(() => {
+    return <Evolver onAuto={() => setAutoEvolveNoteGrid(!autoEvolveNoteGrid)} onTrigger={evolveNoteGrid} name="Evolve Ptn." />
+  }, [autoEvolveNoteGrid, evolveNoteGrid]);
+
+  const scaleEvolver = useMemo(() => {
+    return <Evolver onAuto={() => setAutoEvolveTones(!autoEvolveTones)} onTrigger={doEvolveTones} name="Evolve Scl." />
+  }, [autoEvolveTones, doEvolveTones]);
+
   return (
     <div className="flex flex-col items-center gap-8 p-8">
       <div className="flex flex-col items-center gap-4">
-        <RootSelector onSet={handleRootSet} />
-        <BPMSelector onSet={handleBPMSet} />
-        <PentatonicScaleBuilder 
-          initialSelectedNotes={semitones}
-          onSet={handleScaleSet}
-        />
+        {rs}
+        {bps}
+        {psb}
       </div>
       <PlayerGrid 
         scale={scale} 
@@ -129,8 +149,8 @@ export const PentatonicSynth = () => {
         onNoteGridUpdate={handleNoteGridUpdate}
         onCycleFinished={maybeEvolve}
       />
-      <Evolver onAuto={() => setAutoEvolveNoteGrid(!autoEvolveNoteGrid)} onTrigger={evolveNoteGrid} name="Evolve Ptn." />
-      <Evolver onAuto={() => setAutoEvolveTones(!autoEvolveTones)} onTrigger={doEvolveTones} name="Evolve Scl." />
+      {noteGridEvolver}
+      {scaleEvolver}
     </div>
   );
 };
