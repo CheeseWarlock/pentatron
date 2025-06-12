@@ -1,4 +1,5 @@
 import NoteLight from "./NoteLight";
+import IndicatorLight from "./IndicatorLight";
 
 const notes = Array.from({ length: 10 }, (_, i) => i);
 
@@ -7,7 +8,8 @@ function PlayerGridColumn({
 }: {
   column: number, activeNotes: boolean[], isCurrentColumn: boolean, onNoteGridUpdate: (row: number, col: number, value: boolean) => void
 }) {
-  return (<div className="flex flex-col">
+  return (<>
+    <IndicatorLight isOn={isCurrentColumn} />
     {notes.map((_note, rowIndex) => (
       <NoteLight
         key={`${rowIndex}`}
@@ -16,7 +18,7 @@ function PlayerGridColumn({
         onClick={() => onNoteGridUpdate(rowIndex, column, !activeNotes[rowIndex])}
       />
     ))}
-  </div>)
+  </>)
 }
 
 export default PlayerGridColumn;

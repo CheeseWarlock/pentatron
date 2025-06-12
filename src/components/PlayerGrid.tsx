@@ -64,8 +64,8 @@ const PlayerGrid = ({ scale, bpm, noteGrid, onNoteGridUpdate, onCycleFinished }:
   }
 
   const noteLightGrid = useMemo(() => {
-    return <NoteLightGrid noteGrid={noteGrid} activeColumn={activeColumn ?? -1} onNoteGridUpdate={onNoteGridUpdate} />
-  }, [noteGrid, activeColumn, onNoteGridUpdate]);
+    return <NoteLightGrid scale={scale} noteGrid={noteGrid} activeColumn={activeColumn ?? -1} onNoteGridUpdate={onNoteGridUpdate} />
+  }, [scale, noteGrid, activeColumn, onNoteGridUpdate]);
 
   return (
     <div className="flex flex-row gap-4">
