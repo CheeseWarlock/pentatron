@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import PentatonicScaleBuilder from './PentatonicScaleBuilder';
 import RootSelector from './RootSelector';
 import PentatonicScale from '../PentatonicScale';
@@ -79,19 +79,21 @@ export const PentatonicSynth = () => {
     setSemitones(evolveTones(semitones as Semitones));
   };
 
-  const handleNoteGridUpdate = (row: number, col: number, value: boolean) => {
-    const countInThisColumn = noteGrid[col]?.filter(Boolean).length ?? 0;
-    if (value && countInThisColumn >= 3) return;
-
-    if (noteGrid[col] == undefined) return;
-
-    const newColumn = [...noteGrid[col]!];
-    newColumn[row] = value;
-
-    const newNoteGrid = noteGrid.map((row) => [...row]);
-    newNoteGrid[col] = newColumn;
-    setNoteGrid(newNoteGrid);
-  };
+  const handleNoteGridUpdate = useMemo(() => {
+    return (row: number, col: number, value: boolean) => {
+      const countInThisColumn = noteGrid[col]?.filter(Boolean).length ?? 0;
+      if (value && countInThisColumn >= 3) return;
+  
+      if (noteGrid[col] == undefined) return;
+  
+      const newColumn = [...noteGrid[col]!];
+      newColumn[row] = value;
+  
+      const newNoteGrid = noteGrid.map((row) => [...row]);
+      newNoteGrid[col] = newColumn;
+      setNoteGrid(newNoteGrid);
+    };
+  }, [noteGrid]);
 
   const evolveNoteGrid = () => {
     setNoteGrid(evolveGrid(noteGrid));

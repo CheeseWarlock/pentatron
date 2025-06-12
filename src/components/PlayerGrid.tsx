@@ -84,11 +84,11 @@ const PlayerGrid = ({ scale, bpm, noteGrid, onNoteGridUpdate, onCycleFinished }:
 
         {/* Note grid */}
         <div className="grid grid-cols-[repeat(16,1fr)]">
-          {Array.from({ length: PATTERN_LENGTH }, (_, colIndex) => (
+          {noteGrid.map((col, colIndex) => (
             <PlayerGridColumn
               key={`col-${colIndex}`}
               column={colIndex}
-              activeNotes={noteGrid[colIndex] ?? []}
+              activeNotes={col}
               isCurrentColumn={activeColumn === colIndex}
               onNoteGridUpdate={onNoteGridUpdate} />
           ))}
