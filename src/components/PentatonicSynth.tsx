@@ -6,6 +6,7 @@ import type { Semitones } from '../PentatonicScale';
 import PlayerGrid from './PlayerGrid';
 import BPMSelector from './BPMSelector';
 import Evolver from './Evolver';
+import { evolvePattern } from '../utils';
 
 export const PATTERN_LENGTH = 16;
 export const PITCH_COUNT = 10;
@@ -15,29 +16,6 @@ const initialNoteGrid = Array.from({ length: PATTERN_LENGTH }, () => Array(PITCH
   if (col == undefined || row == undefined || initialNoteGrid[col] == undefined) return;
   initialNoteGrid[col]![row] = true;
 });
-
-/** Randomly toggle a note in the grid */
-const evolveGrid = (noteGrid: boolean[][]) => {
-  let randomRow = Math.floor(Math.random() * PITCH_COUNT);
-  const randomCol = Math.floor(Math.random() * PATTERN_LENGTH);
-
-  if (noteGrid[randomCol] == undefined) return noteGrid;
-  const countInThisColumn = noteGrid[randomCol].filter(Boolean).length;
-  
-  const newNoteGrid = noteGrid.map((col) => [...col]);
-  if (countInThisColumn >= 3) {
-    const onInThisColumn = noteGrid[randomCol].map((item, index) => ({value: item, index: index})).filter((item) => item.value);
-    const randomOn = onInThisColumn[Math.floor(Math.random() * onInThisColumn.length)];
-    if (randomOn !== undefined) {
-      randomRow = randomOn.index;
-    }
-  }
-  if (newNoteGrid[randomCol] === undefined) return noteGrid;
-  const thisColumn = newNoteGrid[randomCol];
-  if (thisColumn === undefined) return noteGrid;
-  thisColumn[randomRow] = !thisColumn[randomRow];
-  return newNoteGrid;
-}
 
 const evolveTones = (semitones: Semitones) => {
   const newTones = [...semitones];
@@ -83,7 +61,6 @@ export const PentatonicSynth = () => {
 
   const handleNoteGridUpdate = useMemo(() => {
     return (row: number, col: number) => {
-      console.log("updating note grid", row, col);
       const currentValue = noteGrid[col]![row]!;
 
       const countInThisColumn = noteGrid[col]?.filter(Boolean).length ?? 0;
@@ -105,7 +82,7 @@ export const PentatonicSynth = () => {
   }, [handleNoteGridUpdate]);
 
   const evolveNoteGrid = useCallback(() => {
-    setNoteGrid(evolveGrid(noteGrid));
+    setNoteGrid(evolvePattern(noteGrid));
   }, [noteGrid]);
 
   const maybeEvolve = () => {
