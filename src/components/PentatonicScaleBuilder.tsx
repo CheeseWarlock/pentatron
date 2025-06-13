@@ -9,9 +9,9 @@ const SCALE = [
   "2+",
   "3-",
   "3+",
-  "4+",
+  "4",
   "5-",
-  "5+",
+  "5",
   "6-",
   "6+",
   "7-",
@@ -88,12 +88,18 @@ export const PentatonicScaleBuilder = ({ initialSelectedNotes, onSet }: Pentaton
             transform: `rotate(${((noteIndex + rotate) * 360) / 12}deg) translate(80px) rotate(${-((noteIndex + rotate) * 360) / 12}deg)`,
           }} />
       ))}
+      {SCALE.map((name, noteIndex) => (
+          <span key={`${noteIndex}-indicator`} className="pointer-events-none" style={{
+            position: 'absolute',
+            transform: `rotate(${((noteIndex + rotate) * 360) / 12}deg) translate(120px) rotate(${-((noteIndex + rotate) * 360) / 12}deg) translate(${noteIndex < 6 ? 40 : -40}px, 0)`,
+          }}>{noteIndex === 0 || noteIndex === 6 ? "" : name}</span>
+      ))}
     </div>)
   }, [initialSelectedNotes, modified, rotate, selectedNotes]);
 
   return (
     <FlatContainer title="Scale">
-      <div className="w-64 h-64 flex flex-col justify-center items-center rounded-lg shadow-md">
+      <div className="w-80 h-64 flex flex-col justify-center items-center rounded-lg shadow-md">
         {scaleRing}
       </div>
       <div className="flex flex-row mt-4 gap-2 w-full justify-between items-center px-6">
