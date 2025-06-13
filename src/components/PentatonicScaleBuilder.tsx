@@ -45,10 +45,9 @@ export const PentatonicScaleBuilder = ({ initialSelectedNotes, onSet }: Pentaton
   };
 
   useEffect(() => {
-    if (!modified) {
-      setSelectedNotes(initialSelectedNotes);
-    }
-  }, [initialSelectedNotes, modified]);
+    setSelectedNotes(initialSelectedNotes);
+    setModified(false);
+  }, [initialSelectedNotes]);
 
   const scaleRing = useMemo(() => {
     const handleNoteClick = (noteIndex: number) => {
@@ -99,7 +98,7 @@ export const PentatonicScaleBuilder = ({ initialSelectedNotes, onSet }: Pentaton
 
   return (
     <FlatContainer title="Scale">
-      <div className="w-80 h-64 flex flex-col justify-center items-center rounded-lg shadow-md">
+      <div className="w-80 h-64 flex flex-col justify-center items-center rounded-lg">
         {scaleRing}
       </div>
       <div className="flex flex-row mt-4 gap-2 w-full justify-between items-center px-6">
@@ -112,7 +111,7 @@ export const PentatonicScaleBuilder = ({ initialSelectedNotes, onSet }: Pentaton
           <span>Valid</span>
         </div>
       </div>
-      <div className="flex flex-row mt-4 gap-2 w-full justify-between items-center px-6">
+      <div className="flex flex-row gap-2 w-full justify-between items-center px-6">
         <div className="flex flex-row gap-2 items-center">
           <ActionButton onClick={handleResetClick} />
           <span>Reset</span>

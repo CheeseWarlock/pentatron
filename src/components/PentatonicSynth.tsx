@@ -7,6 +7,8 @@ import PlayerGrid from './PlayerGrid';
 import BPMSelector from './BPMSelector';
 import Evolver from './Evolver';
 import { evolvePattern } from '../utils';
+import PlayPauseButton from './PlayPauseButton';
+import TitleText from './TitleText';
 
 export const PATTERN_LENGTH = 16;
 export const PITCH_COUNT = 10;
@@ -37,11 +39,12 @@ const evolveTones = (semitones: Semitones) => {
 
 export const PentatonicSynth = () => {
   const [root, setRoot] = useState<number>(256);
-  const [bpm, setBPM] = useState<number>(80);
+  const [bpm, setBPM] = useState<number>(90);
   const [semitones, setSemitones] = useState<number[]>([2, 4, 7, 11]);
   const [noteGrid, setNoteGrid] = useState<boolean[][]>(initialNoteGrid);
   const [autoEvolveNoteGrid, setAutoEvolveNoteGrid] = useState<boolean>(false);
   const [autoEvolveTones, setAutoEvolveTones] = useState<boolean>(false);
+  const [playing, setPlaying] = useState<boolean>(false);
 
   const handleRootSet = (newRoot: number) => {
     setRoot(newRoot);
@@ -120,11 +123,24 @@ export const PentatonicSynth = () => {
   }, [autoEvolveTones, doEvolveTones]);
 
   return (
-    <div className="flex flex-col items-center gap-8 p-8">
-      <div className="flex flex-col items-center gap-4">
-        {rs}
-        {bps}
+    <div className="flex flex-col items-center gap-4 p-8">
+      <TitleText />
+      <div className="flex flex-row gap-4 items-stretch">
+        <div className="flex flex-col items-center flex-1">
+          <div className="flex-1 flex items-center justify-center">
+            <PlayPauseButton playing={playing} togglePlaying={() => setPlaying(!playing)} />
+          </div>
+          <div className="flex flex-row items-center gap-4">
+            {rs}
+            {bps}
+          </div>
+        </div>
+        
         {psb}
+      </div>
+      <div className="flex flex-row items-center gap-4 justify-around w-full">
+        {noteGridEvolver}
+        {scaleEvolver}
       </div>
       <PlayerGrid 
         scale={scale} 
@@ -132,9 +148,8 @@ export const PentatonicSynth = () => {
         noteGrid={noteGrid}
         onNoteGridUpdate={outerNoteGridUpdate}
         onCycleFinished={maybeEvolve}
+        playing={playing}
       />
-      {noteGridEvolver}
-      {scaleEvolver}
     </div>
   );
 };

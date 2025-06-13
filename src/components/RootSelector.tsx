@@ -16,14 +16,14 @@ interface RootSelectorProps {
  */
 export const RootSelector = ({ root, onSet }: RootSelectorProps) => {
   return (
-    <FlatContainer title="Root Frq.">
+    <FlatContainer title="Rt Frq">
       <div className="flex flex-row items-center gap-4 h-50">
         <div className="h-full flex items-center gap-6">
           <FlatVerticalSlider value={root} min={MIN_ROOT} max={MAX_ROOT} onChange={onSet} />
           <div className="h-full flex flex-col justify-between pointer-events-none">
             {range(MAX_ROOT, MIN_ROOT, -STEP_ROOT).map((tick) => (
               <div key={tick} className="flex items-center gap-1">
-                <div className="w-2 h-px bg-gray-400" />
+                <div className="w-2 h-px bg-neutral-400" />
                 <span className="text-sm">{tick}</span>
               </div>
             ))}

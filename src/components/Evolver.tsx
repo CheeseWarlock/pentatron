@@ -7,8 +7,8 @@ function Evolver({ onAuto, onTrigger, name }: { onAuto: (auto: boolean) => void,
   const [auto, setAuto] = useState(false);
 
   return <FlatContainer title={name}>
-    <div className="flex flex-col items-center gap-2 justify-between w-full">
-      <div className="flex flex-row items-center gap-2">
+    <div className="flex flex-col items-center gap-2">
+      <div className="flex flex-row items-center gap-2 justify-between w-full">
         <ActionButton onClick={() => {
           setAuto(!auto);
           onAuto(!auto);

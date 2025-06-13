@@ -1,9 +1,6 @@
 import { useMemo, useRef, useEffect, useState } from "react";
 import PentatonicScale from "../PentatonicScale";
 import { Synth, Loop, getTransport, PolySynth } from "tone";
-import ActionButton from "./ActionButton";
-import FlatContainer from "./FlatContainer";
-import IndicatorLight from "./IndicatorLight";
 import NoteLightGrid from "./NoteLightGrid";
 import { PATTERN_LENGTH, PITCH_COUNT } from "./PentatonicSynth";
 import RootIndicatorColumn from "./RootIndicatorColumn";
@@ -14,17 +11,17 @@ interface PlayerGridProps {
   noteGrid: boolean[][];
   onNoteGridUpdate: (row: number, col: number) => void;
   onCycleFinished: () => void;
+  playing: boolean;
 }
 
 /**
  * The main component for the player grid. Handles audio playback.
  */
-const PlayerGrid = ({ scale, bpm, noteGrid, onNoteGridUpdate, onCycleFinished }: PlayerGridProps) => {
+const PlayerGrid = ({ scale, bpm, noteGrid, onNoteGridUpdate, onCycleFinished, playing }: PlayerGridProps) => {
   const scaleRef = useRef(scale);
   const noteGridRef = useRef(noteGrid);
   const callbackRef = useRef(onCycleFinished);
   const [activeColumn, setActiveColumn] = useState<number | null>(null);
-  const [playing, setPlaying] = useState<boolean>(false);
   getTransport().bpm.value = bpm;
   
   useEffect(() => {
@@ -55,16 +52,14 @@ const PlayerGrid = ({ scale, bpm, noteGrid, onNoteGridUpdate, onCycleFinished }:
     return getTransport();
   }, []);
 
-  const togglePlaying = () => {
-    if (toneTransport.state === "stopped") {
+  useEffect(() => {
+    if (playing) {
       toneTransport.start();
-      setPlaying(true);
     } else {
       toneTransport.stop();
-      setPlaying(false);
       setActiveColumn(null);
     }
-  }
+  }, [playing, toneTransport]);
 
   const noteLightGrid = useMemo(() => {
     return <NoteLightGrid noteGrid={noteGrid} activeColumn={activeColumn ?? -1} onNoteGridUpdate={onNoteGridUpdate} />
@@ -75,18 +70,9 @@ const PlayerGrid = ({ scale, bpm, noteGrid, onNoteGridUpdate, onCycleFinished }:
   }, [scale]);
 
   return (
-    <div className="flex flex-row gap-4">
-      <FlatContainer title="Play">
-        <div className="flex flex-row items-center gap-2">
-          <ActionButton onClick={togglePlaying} />
-          <IndicatorLight isOn={playing} />
-        </div>
-      </FlatContainer>
-      <div className="grid grid-cols-17 grid-rows-11 grid-flow-col items-center justify-items-center">
-        {rootIndicatorColumn}
-      {noteLightGrid}
-      </div>
-      
+    <div className="grid grid-cols-17 grid-rows-11 grid-flow-col items-center justify-items-center">
+      {rootIndicatorColumn}
+    {noteLightGrid}
     </div>
   );
 };

@@ -20,7 +20,7 @@ export const BPMSelector = ({ bpm, onSet }: BPMSelectorProps) => {
           <div className="h-full flex flex-col justify-between pointer-events-none">
             {range(MAX_BPM, MIN_BPM, -STEP_BPM).map((tick) => (
               <div key={tick} className="flex items-center gap-1">
-                <div className="w-2 h-px bg-gray-400" />
+                <div className="w-2 h-px bg-neutral-400" />
                 <span className="text-sm">{tick}</span>
               </div>
             ))}
