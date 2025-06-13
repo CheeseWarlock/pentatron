@@ -1,14 +1,19 @@
 import { useCallback } from "react";
 
 interface NoteLightProps {
-  active: boolean;
-  glowing: boolean;
+  state: NoteLightState;
   onClick: (row: number, col: number) => void;
   row: number;
   col: number;
 }
 
-export const NoteLight = ({ active, glowing, onClick, row, col }: NoteLightProps) => {
+type NoteLightState = "off" | "low" | "high";
+
+/**
+ * A single note light.
+ * Has 3 brightness states: off, low, and high.
+ */
+export const NoteLight = ({ state, onClick, row, col }: NoteLightProps) => {
   const handleClick = useCallback(() => {
     onClick(row, col);
   }, [onClick, row, col]);
@@ -16,14 +21,14 @@ export const NoteLight = ({ active, glowing, onClick, row, col }: NoteLightProps
   return (
     <div className="p-1 cursor-pointer" onClick={handleClick}>
       <div
-        style={ { boxShadow: glowing ? '0 0px 6px 3px var(--color-amber-400)' : active ? '0 0px 4px 2px var(--color-amber-600)' : 'none' } }
+        style={ { boxShadow: state === "high" ? '0 0px 6px 3px var(--color-amber-400)' : state === "low" ? '0 0px 4px 2px var(--color-amber-600)' : 'none' } }
         className={`w-8 h-8 rounded-full
-                  ${glowing 
+                  ${state === "high" 
                     ? 'bg-amber-200' 
-                    : active ? 'bg-amber-500' : 'bg-amber-900'
+                    : state === "low" ? 'bg-amber-500' : 'bg-amber-900'
                   }
                   transition-all
-                  ${glowing 
+                  ${state === "high" 
                     ? 'duration-75' 
                     : 'duration-200'
                   }`}

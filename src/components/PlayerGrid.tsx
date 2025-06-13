@@ -16,6 +16,9 @@ interface PlayerGridProps {
   onCycleFinished: () => void;
 }
 
+/**
+ * The main component for the player grid. Handles audio playback.
+ */
 const PlayerGrid = ({ scale, bpm, noteGrid, onNoteGridUpdate, onCycleFinished }: PlayerGridProps) => {
   const scaleRef = useRef(scale);
   const noteGridRef = useRef(noteGrid);
@@ -67,6 +70,10 @@ const PlayerGrid = ({ scale, bpm, noteGrid, onNoteGridUpdate, onCycleFinished }:
     return <NoteLightGrid noteGrid={noteGrid} activeColumn={activeColumn ?? -1} onNoteGridUpdate={onNoteGridUpdate} />
   }, [noteGrid, activeColumn, onNoteGridUpdate]);
 
+  const rootIndicatorColumn = useMemo(() => {
+    return <RootIndicatorColumn scale={scale} />
+  }, [scale]);
+
   return (
     <div className="flex flex-row gap-4">
       <FlatContainer title="Play">
@@ -76,7 +83,7 @@ const PlayerGrid = ({ scale, bpm, noteGrid, onNoteGridUpdate, onCycleFinished }:
         </div>
       </FlatContainer>
       <div className="grid grid-cols-17 grid-rows-11 grid-flow-col items-center justify-items-center">
-        <RootIndicatorColumn scale={scale} />
+        {rootIndicatorColumn}
       {noteLightGrid}
       </div>
       

@@ -5,6 +5,9 @@ interface RootSelectorProps {
   onSet?: (root: number) => void;
 }
 
+/**
+ * Selector for the root frequency.
+ */
 export const RootSelector = ({ root, onSet }: RootSelectorProps) => {
   return (
     <FlatContainer title="Root Freq.">
