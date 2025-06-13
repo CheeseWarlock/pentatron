@@ -82,20 +82,27 @@ export const PentatonicSynth = () => {
   }, [semitones]);
 
   const handleNoteGridUpdate = useMemo(() => {
-    return (row: number, col: number, value: boolean) => {
+    return (row: number, col: number) => {
+      console.log("updating note grid", row, col);
+      const currentValue = noteGrid[col]![row]!;
+
       const countInThisColumn = noteGrid[col]?.filter(Boolean).length ?? 0;
-      if (value && countInThisColumn >= 3) return;
+      if ((!currentValue) && countInThisColumn >= 3) return;
   
       if (noteGrid[col] == undefined) return;
   
       const newColumn = [...noteGrid[col]!];
-      newColumn[row] = value;
+      newColumn[row] = !currentValue;
   
-      const newNoteGrid = noteGrid.map((row) => [...row]);
+      const newNoteGrid = noteGrid.map((row) => row);
       newNoteGrid[col] = newColumn;
       setNoteGrid(newNoteGrid);
     };
   }, [noteGrid]);
+
+  const outerNoteGridUpdate = useCallback((row: number, col: number) => {
+    handleNoteGridUpdate(row, col);
+  }, [handleNoteGridUpdate]);
 
   const evolveNoteGrid = useCallback(() => {
     setNoteGrid(evolveGrid(noteGrid));
@@ -146,7 +153,7 @@ export const PentatonicSynth = () => {
         scale={scale} 
         bpm={bpm} 
         noteGrid={noteGrid}
-        onNoteGridUpdate={handleNoteGridUpdate}
+        onNoteGridUpdate={outerNoteGridUpdate}
         onCycleFinished={maybeEvolve}
       />
       {noteGridEvolver}

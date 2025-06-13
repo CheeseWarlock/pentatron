@@ -12,7 +12,7 @@ interface PlayerGridProps {
   scale: PentatonicScale;
   bpm: number;
   noteGrid: boolean[][];
-  onNoteGridUpdate: (row: number, col: number, value: boolean) => void;
+  onNoteGridUpdate: (row: number, col: number) => void;
   onCycleFinished: () => void;
 }
 
@@ -59,6 +59,7 @@ const PlayerGrid = ({ scale, bpm, noteGrid, onNoteGridUpdate, onCycleFinished }:
     } else {
       toneTransport.stop();
       setPlaying(false);
+      setActiveColumn(null);
     }
   }
 
