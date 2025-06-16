@@ -2,20 +2,21 @@ import { useEffect, useMemo, useState } from 'react';
 import ActionButton from './ActionButton';
 import IndicatorLight from './IndicatorLight';
 import FlatContainer from './FlatContainer';
+import NoteLight from './NoteLight';
 
 const SCALE = [
   "Root",
-  "2-",
-  "2+",
-  "3-",
-  "3+",
+  "",
+  "2",
+  "",
+  "3",
   "4",
-  "5-",
+  "",
   "5",
-  "6-",
-  "6+",
-  "7-",
-  "7+"
+  "",
+  "6",
+  "",
+  "7"
 ]
 
 interface PentatonicScaleBuilderProps {
@@ -45,9 +46,11 @@ export const PentatonicScaleBuilder = ({ initialSelectedNotes, onSet }: Pentaton
   };
 
   useEffect(() => {
-    setSelectedNotes(initialSelectedNotes);
-    setModified(false);
-  }, [initialSelectedNotes]);
+    const currentIsSameAsInitial = initialSelectedNotes.every((initialSelectedNote, index) => initialSelectedNote === selectedNotes[index])
+    if (!currentIsSameAsInitial) {
+      setModified(true);
+    }
+  }, [initialSelectedNotes, selectedNotes]);
 
   const scaleRing = useMemo(() => {
     const handleNoteClick = (noteIndex: number) => {
@@ -63,18 +66,19 @@ export const PentatonicScaleBuilder = ({ initialSelectedNotes, onSet }: Pentaton
       {SCALE.map((_name, noteIndex) => 
         noteIndex === 0 ?
           <div
-            className="w-10 h-10 rounded-md border-2 flex items-center justify-center text-sm font-bold"
+            className="w-10 h-10 rounded-full border-2 flex items-center justify-center text-sm font-bold"
             key={`${noteIndex}-root`}
             style={{
               position: 'absolute',
               transform: `rotate(${((noteIndex + rotate) * 360) / 12}deg) translate(120px) rotate(${-((noteIndex + rotate) * 360) / 12}deg)`,
             }}
           >Root</div> :
-          <ActionButton
-            halfWidth={true}
+          <NoteLight
+            row={0}
+            col={noteIndex}
             key={`${noteIndex}-button`}
             onClick={() => handleNoteClick(noteIndex)}
-            angle={((270 + 360) - noteIndex * 30) % 360}
+            state={selectedNotes.includes(noteIndex) ? "low" : "off"}
             style={{
               position: 'absolute',
               transform: `rotate(${((noteIndex + rotate) * 360) / 12}deg) translate(120px)`,
@@ -82,7 +86,7 @@ export const PentatonicScaleBuilder = ({ initialSelectedNotes, onSet }: Pentaton
           />
       )}
       {SCALE.map((_name, noteIndex) => (
-          <IndicatorLight key={`${noteIndex}-indicator`} isOn={noteIndex === 0 || (modified ? selectedNotes : initialSelectedNotes).includes(noteIndex)} style={{
+          <IndicatorLight key={`${noteIndex}-indicator`} isOn={noteIndex === 0 || initialSelectedNotes.includes(noteIndex)} style={{
             position: 'absolute',
             transform: `rotate(${((noteIndex + rotate) * 360) / 12}deg) translate(80px) rotate(${-((noteIndex + rotate) * 360) / 12}deg)`,
           }} />
@@ -90,11 +94,11 @@ export const PentatonicScaleBuilder = ({ initialSelectedNotes, onSet }: Pentaton
       {SCALE.map((name, noteIndex) => (
           <span key={`${noteIndex}-indicator`} className="pointer-events-none" style={{
             position: 'absolute',
-            transform: `rotate(${((noteIndex + rotate) * 360) / 12}deg) translate(120px) rotate(${-((noteIndex + rotate) * 360) / 12}deg) translate(${noteIndex < 6 ? 40 : -40}px, 0)`,
+            transform: `rotate(${((noteIndex + rotate) * 360) / 12}deg) translate(140px) rotate(${-((noteIndex + rotate) * 360) / 12}deg) translate(${noteIndex < 6 ? 20 : -20}px, 0)`,
           }}>{noteIndex === 0 || noteIndex === 6 ? "" : name}</span>
       ))}
     </div>)
-  }, [initialSelectedNotes, modified, rotate, selectedNotes]);
+  }, [initialSelectedNotes, rotate, selectedNotes]);
 
   return (
     <FlatContainer title="Scale">
@@ -114,7 +118,7 @@ export const PentatonicScaleBuilder = ({ initialSelectedNotes, onSet }: Pentaton
       <div className="flex flex-row gap-2 w-full justify-between items-center px-6">
         <div className="flex flex-row gap-2 items-center">
           <ActionButton onClick={handleResetClick} />
-          <span>Reset</span>
+          <span>Discard</span>
         </div>
         <div className="flex flex-row gap-2 items-center">
         <IndicatorLight isOn={modified} />

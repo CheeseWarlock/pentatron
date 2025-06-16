@@ -5,6 +5,7 @@ interface NoteLightProps {
   onClick: (row: number, col: number) => void;
   row: number;
   col: number;
+  style?: React.CSSProperties;
 }
 
 type NoteLightState = "off" | "low" | "high";
@@ -13,13 +14,13 @@ type NoteLightState = "off" | "low" | "high";
  * A single note light.
  * Has 3 brightness states: off, low, and high.
  */
-export const NoteLight = ({ state, onClick, row, col }: NoteLightProps) => {
+export const NoteLight = ({ state, onClick, row, col, style }: NoteLightProps) => {
   const handleClick = useCallback(() => {
     onClick(row, col);
   }, [onClick, row, col]);
 
   return (
-    <div className="relative p-1 cursor-pointer" onClick={handleClick}>
+    <div className="relative p-1 cursor-pointer" onClick={handleClick} style={style}>
       <div
         className={`w-8 h-8 rounded-full bg-radial-[at_50%_12px] from-amber-800 to-amber-900 to-50% absolute`}
       />
