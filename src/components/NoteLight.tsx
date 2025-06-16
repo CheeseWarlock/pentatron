@@ -19,20 +19,13 @@ export const NoteLight = ({ state, onClick, row, col }: NoteLightProps) => {
   }, [onClick, row, col]);
 
   return (
-    <div className="p-1 cursor-pointer" onClick={handleClick}>
+    <div className="relative p-1 cursor-pointer" onClick={handleClick}>
       <div
-        style={ { boxShadow: state === "high" ? '0 0px 6px 3px var(--color-amber-400)' : state === "low" ? '0 0px 4px 2px var(--color-amber-600)' : 'none' } }
-        className={`w-8 h-8 rounded-full
-                  ${state === "high" 
-                    ? 'bg-amber-200' 
-                    : state === "low" ? 'bg-amber-500' : 'bg-amber-900'
-                  }
-                  transition-all
-                  ${state === "high" 
-                    ? 'duration-75' 
-                    : 'duration-200'
-                  }`}
+        className={`w-8 h-8 rounded-full bg-radial-[at_50%_12px] from-amber-800 to-amber-900 to-50% absolute`}
       />
+      <div
+        style={ { boxShadow: state === "high" ? '0 0px 6px 3px var(--color-amber-400)' : '0 0px 4px 2px var(--color-amber-600)' } }
+        className={`relative z-1 transition-all w-8 h-8 rounded-full ${state === "off" ? 'opacity-0' : 'opacity-100'} ${state === "high" ? 'duration-75 bg-amber-200' : 'duration-200 bg-amber-500'}`} />
     </div>
   );
 };
