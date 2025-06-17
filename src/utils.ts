@@ -1,4 +1,5 @@
 import { PATTERN_LENGTH, PITCH_COUNT } from "./components/PentatonicSynth";
+import type { Semitones } from "./PentatonicScale";
 
 // Python range function
 export const range = (start: number, stop: number, step: number) => {
@@ -52,6 +53,31 @@ export const evolvePattern = (pattern: boolean[][]) => {
   return pattern.map((col) => [...col]);
 }
 
+/**
+ * Swap two random tones in the semitone array.
+ */
+export const evolveTones = (semitones: Semitones): Semitones => {
+  const newTones = [...semitones];
+  const tonesByState = (new Array(11)).fill(0).map((_, index) => {
+    return { idx: index + 1, state: semitones.includes(index + 1) };
+  });
+  const trueTones = tonesByState.filter((tone) => tone.state);
+  const falseTones = tonesByState.filter((tone) => !tone.state);
+
+  const toneToAdd = falseTones[Math.floor(Math.random() * falseTones.length)];
+  const toneToRemove = trueTones[Math.floor(Math.random() * trueTones.length)];
+
+  if (toneToAdd !== undefined && toneToRemove !== undefined) {
+    newTones.push(toneToAdd.idx);
+    newTones.splice(newTones.indexOf(toneToRemove.idx), 1);
+  }
+  return newTones.sort((a, b) => a - b) as Semitones;
+}
+
+/**
+ * Flip a random note in a random column.
+ * Ensures that there's never more than three trues in a single column.
+ */
 export const oldEvolvePattern = (noteGrid: boolean[][]) => {
   let randomRow = Math.floor(Math.random() * PITCH_COUNT);
   const randomCol = Math.floor(Math.random() * PATTERN_LENGTH);

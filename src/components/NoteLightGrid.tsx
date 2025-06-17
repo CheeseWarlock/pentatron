@@ -2,10 +2,16 @@ import { useMemo } from "react";
 
 import NoteLightColumn from "./NoteLightColumn";
 
+interface NoteLightGridProps {
+  noteGrid: boolean[][];
+  activeColumn: number;
+  onNoteGridUpdate: (row: number, col: number) => void;
+}
+
 /**
  * The grid of note lights.
  */
-function NoteLightGrid({ noteGrid, activeColumn, onNoteGridUpdate }: { noteGrid: boolean[][], activeColumn: number, onNoteGridUpdate: (row: number, col: number) => void }) {
+function NoteLightGrid({ noteGrid, activeColumn, onNoteGridUpdate }: NoteLightGridProps) {
   const memoizedList = noteGrid.map((col, colIndex) => {
     const isCurrentColumn = activeColumn === colIndex;
     

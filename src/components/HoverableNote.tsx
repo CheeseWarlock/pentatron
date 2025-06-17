@@ -1,10 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { Synth } from "tone";
 
+interface HoverableNoteProps {
+  frequency: number;
+}
+
 /**
  * A note that plays on hover; for testing purposes.
  */
-function HoverableNote({frequency}: {frequency: number}) {
+function HoverableNote({frequency}: HoverableNoteProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const synth = useMemo<Synth>(() => new Synth().toDestination(), []);
 

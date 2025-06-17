@@ -3,14 +3,19 @@ import IndicatorLight from "./IndicatorLight";
 
 const notes = Array.from({ length: 10 }, (_, i) => i);
 
+interface NoteLightColumnProps {
+  column: number;
+  activeNotes: boolean[];
+  isCurrentColumn: boolean;
+  onNoteGridUpdate: (row: number, col: number) => void;
+}
+
 /**
  * A column of note lights with a current column indicator at the top.
  */
 function NoteLightColumn({
   column, activeNotes, isCurrentColumn, onNoteGridUpdate
-}: {
-  column: number, activeNotes: boolean[], isCurrentColumn: boolean, onNoteGridUpdate: (row: number, col: number) => void
-}) {
+}: NoteLightColumnProps) {
   return (<>
     <IndicatorLight isOn={isCurrentColumn} />
     {notes.map((_note, rowIndex) => (

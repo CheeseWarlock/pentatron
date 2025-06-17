@@ -1,7 +1,12 @@
+interface IndicatorLightProps {
+  isOn: boolean;
+  style?: React.CSSProperties;
+}
+
 /**
  * A small red light that indicates a boolean state.
  */
-function IndicatorLight({ isOn, style }: { isOn: boolean, style?: React.CSSProperties }) {
+function IndicatorLight({ isOn, style }: IndicatorLightProps) {
   return <div
     style={ { boxShadow: isOn ? '0 0px 6px 3px var(--color-red-500)' : 'none', ...style } }
     className={`flex items-center justify-center w-4 h-4 transition-all duration-50 rounded-full ${isOn ? 'bg-red-500' : 'bg-red-900'}`}

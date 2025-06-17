@@ -1,10 +1,14 @@
 import PentatonicScale from "../PentatonicScale";
 import IndicatorLight from "./IndicatorLight";
 
+interface RootIndicatorColumnProps {
+  scale: PentatonicScale;
+}
+
 /**
  * The root indicator column. Highlights the root notes of the scale.
  */
-function RootIndicatorColumn({ scale }: { scale: PentatonicScale }) {
+function RootIndicatorColumn({ scale }: RootIndicatorColumnProps) {
   return (<><div className="self-end">Root</div>
     {Array.from({ length: 10 }, (_, i) => (
       <div key={`row-${i}`} className="flex items-center justify-center">

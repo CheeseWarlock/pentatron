@@ -3,10 +3,16 @@ import IndicatorLight from "./IndicatorLight";
 import FlatContainer from "./FlatContainer";
 import ActionButton from "./ActionButton";
 
+interface EvolverProps {
+  onAuto: (auto: boolean) => void;
+  onTrigger: () => void;
+  name: string;
+}
+
 /**
  * UI section for triggering automatic changes.
  */
-function Evolver({ onAuto, onTrigger, name }: { onAuto: (auto: boolean) => void, onTrigger: () => void, name: string }) {
+function Evolver({ onAuto, onTrigger, name }: EvolverProps) {
   const [auto, setAuto] = useState(false);
 
   return <FlatContainer title={name}>
