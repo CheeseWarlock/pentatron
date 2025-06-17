@@ -11,7 +11,7 @@ interface NoteLightProps {
 type NoteLightState = "off" | "low" | "high";
 
 /**
- * A single note light.
+ * A medium-sized yellow light with touch interaction.
  * Has 3 brightness states: off, low, and high.
  */
 export const NoteLight = ({ state, onClick, row, col, style }: NoteLightProps) => {

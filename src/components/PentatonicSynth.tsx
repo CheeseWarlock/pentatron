@@ -37,6 +37,10 @@ const evolveTones = (semitones: Semitones) => {
   return newTones.sort((a, b) => a - b);
 }
 
+/**
+ * The main Pentatron component.
+ * Contains all the UI as well as audio logic (via PlayerGrid).
+ */
 export const PentatonicSynth = () => {
   const [root, setRoot] = useState<number>(256);
   const [bpm, setBPM] = useState<number>(90);

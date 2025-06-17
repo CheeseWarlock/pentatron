@@ -1,3 +1,6 @@
+/**
+ * A container with a title and a border.
+ */
 function FlatContainer({ children, title }: { children: React.ReactNode, title: string }) {
   return <div className="flex flex-col items-center gap-2 p-6 rounded-lg border-2 border-neutral-300 relative">
     <div className="text-xl absolute -top-2 left-2 bg-neutral-800 px-2 select-none h-3">

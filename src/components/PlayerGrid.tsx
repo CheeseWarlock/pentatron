@@ -34,8 +34,11 @@ const PlayerGrid = ({ scale, bpm, noteGrid, onNoteGridUpdate, onCycleFinished, p
     callbackRef.current = onCycleFinished;
   }, [onCycleFinished]);
 
+  const synth = useMemo(() => {
+    return new PolySynth(Synth).toDestination();
+  }, []);
+
   const toneTransport = useMemo(() => {
-    const synthA = new PolySynth(Synth).toDestination();
 
     new Loop((_time) => {
       callbackRef.current();
@@ -46,11 +49,18 @@ const PlayerGrid = ({ scale, bpm, noteGrid, onNoteGridUpdate, onCycleFinished, p
         setActiveColumn(i);
         const noteEnabledForNow = noteGridRef.current[i]!;
         const notesToPlay = noteEnabledForNow.map((enabled, index) => enabled ? scaleRef.current.getNotes(250, 1000)[PITCH_COUNT - 1 - index] : null).filter((note) => note !== null);
-        notesToPlay.forEach(note => { if (note) synthA.triggerAttackRelease(note, "16n", time, (i % 2 == 0) ? 1 : 0.85); });
+        notesToPlay.forEach(note => { if (note) synth.triggerAttackRelease(note, "16n", time, (i % 2 == 0) ? 1 : 0.85); });
       }, "1m").start(`0:0:${i}`);
     }
     return getTransport();
-  }, []);
+  }, [synth]);
+
+  useEffect(() => {
+    return () => {
+      synth.disconnect();
+      toneTransport.stop();
+    }
+  }, [synth, toneTransport]);
 
   useEffect(() => {
     if (playing) {

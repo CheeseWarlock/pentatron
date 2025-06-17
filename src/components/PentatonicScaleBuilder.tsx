@@ -4,8 +4,8 @@ import IndicatorLight from './IndicatorLight';
 import FlatContainer from './FlatContainer';
 import NoteLight from './NoteLight';
 
-const SCALE = [
-  "Root",
+const SCALE_POSITION_NAMES = [
+  "",
   "",
   "2",
   "",
@@ -63,7 +63,7 @@ export const PentatonicScaleBuilder = ({ initialSelectedNotes, onSet }: Pentaton
       });
     };
     return (<div className="relative w-[300px] h-[300px] flex justify-center items-center">
-      {SCALE.map((_name, noteIndex) => 
+      {SCALE_POSITION_NAMES.map((_name, noteIndex) => 
         noteIndex === 0 ?
           <div
             className="w-10 h-10 rounded-full border-2 flex items-center justify-center text-sm font-bold"
@@ -85,17 +85,19 @@ export const PentatonicScaleBuilder = ({ initialSelectedNotes, onSet }: Pentaton
             }}
           />
       )}
-      {SCALE.map((_name, noteIndex) => (
+      {SCALE_POSITION_NAMES.map((_name, noteIndex) => (
           <IndicatorLight key={`${noteIndex}-indicator`} isOn={noteIndex === 0 || initialSelectedNotes.includes(noteIndex)} style={{
             position: 'absolute',
             transform: `rotate(${((noteIndex + rotate) * 360) / 12}deg) translate(80px) rotate(${-((noteIndex + rotate) * 360) / 12}deg)`,
           }} />
       ))}
-      {SCALE.map((name, noteIndex) => (
+      {SCALE_POSITION_NAMES.map((name, noteIndex) => (
+        name !== "" && (
           <span key={`${noteIndex}-indicator`} className="pointer-events-none" style={{
             position: 'absolute',
             transform: `rotate(${((noteIndex + rotate) * 360) / 12}deg) translate(140px) rotate(${-((noteIndex + rotate) * 360) / 12}deg) translate(${noteIndex < 6 ? 20 : -20}px, 0)`,
-          }}>{noteIndex === 0 || noteIndex === 6 ? "" : name}</span>
+          }}>{name}</span>
+        )
       ))}
     </div>)
   }, [initialSelectedNotes, rotate, selectedNotes]);

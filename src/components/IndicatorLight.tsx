@@ -1,3 +1,6 @@
+/**
+ * A small red light that indicates a boolean state.
+ */
 function IndicatorLight({ isOn, style }: { isOn: boolean, style?: React.CSSProperties }) {
   return <div
     style={ { boxShadow: isOn ? '0 0px 6px 3px var(--color-red-500)' : 'none', ...style } }

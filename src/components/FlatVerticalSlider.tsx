@@ -5,6 +5,9 @@ interface FlatVerticalSliderProps {
   onChange: (value: number) => void;
 }
 
+/**
+ * A custom styled slider.
+ */
 function FlatVerticalSlider({ value, min, max, onChange }: FlatVerticalSliderProps) {
   return (<input
     type="range"

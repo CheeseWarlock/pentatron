@@ -7,6 +7,9 @@ interface PlayPauseButtonProps {
   togglePlaying: () => void;
 }
 
+/**
+ * A section containing a play/pause button and an indicator light.
+ */
 function PlayPauseButton({ playing, togglePlaying }: PlayPauseButtonProps) {
   return (
     <FlatContainer title="Play">

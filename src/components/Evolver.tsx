@@ -3,6 +3,9 @@ import IndicatorLight from "./IndicatorLight";
 import FlatContainer from "./FlatContainer";
 import ActionButton from "./ActionButton";
 
+/**
+ * UI section for triggering automatic changes.
+ */
 function Evolver({ onAuto, onTrigger, name }: { onAuto: (auto: boolean) => void, onTrigger: () => void, name: string }) {
   const [auto, setAuto] = useState(false);
 

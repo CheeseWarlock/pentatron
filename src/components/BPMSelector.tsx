@@ -11,6 +11,9 @@ interface BPMSelectorProps {
   onSet: (bpm: number) => void;
 }
 
+/**
+ * A BPM sleector with a slider and ticks.
+ */
 export const BPMSelector = ({ bpm, onSet }: BPMSelectorProps) => {
   return (
     <FlatContainer title="BPM">

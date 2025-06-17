@@ -1,3 +1,6 @@
+/**
+ * The title text for the Pentatron, with a cool font and gradient stripes.
+ */
 function TitleText() {
   return (
     <h1 className="audiowide-regular text-4xl text-white relative w-full">
