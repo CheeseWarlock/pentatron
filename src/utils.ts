@@ -75,6 +75,33 @@ export const evolveTones = (semitones: Semitones): Semitones => {
 }
 
 /**
+ * Calculate unpleasantness for evolveTonesNicely.
+ */
+export const unpleasantness = (semitones: Semitones): number => {
+  const semitonesWithZero = [0, ...semitones];
+  const semitonesWithTwelve = [...semitones, 12];
+  return semitonesWithZero.reduce((acc, tone) => {
+    const result = (semitonesWithTwelve.includes(tone + 1) ? 1 : 0) + (semitonesWithTwelve.includes(tone + 6) && tone !== 6 ? 1 : 0);
+    return acc +result;
+  }, 0);
+}
+
+/**
+ * Try two different evolutions, and return the one that results in fewer unpleasant intervals.
+ * Unpleasant intervals are intervals that are 1 or 6 semitones apart.
+ */
+export const evolveTonesNicely = (semitones: Semitones): Semitones => {
+  const firstAttempt = evolveTones(semitones);
+  const secondAttempt = evolveTones(semitones);
+
+  if (unpleasantness(firstAttempt) < unpleasantness(secondAttempt)) {
+    return firstAttempt;
+  } else {
+    return secondAttempt;
+  }
+}
+
+/**
  * Flip a random note in a random column.
  * Ensures that there's never more than three trues in a single column.
  */

@@ -1,5 +1,5 @@
 import { describe, test, expect } from 'vitest';
-import { evolveTones, evolvePattern } from '../utils';
+import { evolveTones, evolvePattern, unpleasantness } from '../utils';
 import type { Semitones } from '../PentatonicScale';
 import { PATTERN_LENGTH, PITCH_COUNT } from '../components/PentatonicSynth';
 
@@ -84,5 +84,43 @@ describe('evolvePattern', () => {
     const initialPattern = Array(16).fill(null).map(() => Array(10).fill(false));
     const evolvedPattern = evolvePattern(initialPattern);
     expect(evolvedPattern).toEqual(initialPattern);
+  });
+});
+
+describe('unpleasantness', () => {
+  test('should return 0 for a major pentatonic scale', () => {
+    const semitones: Semitones = [2, 4, 7, 9];
+    const scaleUnpleasantness = unpleasantness(semitones);
+    expect(scaleUnpleasantness).toBe(0);
+  });
+
+  test('should return 0 for another pentatonic scale', () => {
+    const semitones: Semitones = [3, 5, 8, 10];
+    const scaleUnpleasantness = unpleasantness(semitones);
+    expect(scaleUnpleasantness).toBe(0);
+  });
+
+  test('should return 1 for a scale with a minor 2nd', () => {
+    const semitones: Semitones = [3, 5, 7, 8];
+    const scaleUnpleasantness = unpleasantness(semitones);
+    expect(scaleUnpleasantness).toBe(1);
+  });
+
+  test('should return 1 for a scale with a tritone', () => {
+    const semitones: Semitones = [2, 4, 6, 9];
+    const scaleUnpleasantness = unpleasantness(semitones);
+    expect(scaleUnpleasantness).toBe(1);
+  });
+
+  test('should return 4 for 4 minor 2nds', () => {
+    const semitones: Semitones = [1, 2, 3, 4];
+    const scaleUnpleasantness = unpleasantness(semitones);
+    expect(scaleUnpleasantness).toBe(4);
+  });
+  
+  test('should return 4 for 4 minor 2nds wrapping around 0', () => {
+    const semitones: Semitones = [1, 2, 10, 11];
+    const scaleUnpleasantness = unpleasantness(semitones);
+    expect(scaleUnpleasantness).toBe(4);
   });
 });

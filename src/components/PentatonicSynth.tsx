@@ -9,6 +9,7 @@ import Evolver from './Evolver';
 import { evolvePattern } from '../utils';
 import PlayPauseButton from './PlayPauseButton';
 import TitleText from './TitleText';
+import { evolveTonesNicely } from '../utils';
 
 export const PATTERN_LENGTH = 16;
 export const PITCH_COUNT = 10;
@@ -18,24 +19,6 @@ const initialNoteGrid = Array.from({ length: PATTERN_LENGTH }, () => Array(PITCH
   if (col == undefined || row == undefined || initialNoteGrid[col] == undefined) return;
   initialNoteGrid[col]![row] = true;
 });
-
-const evolveTones = (semitones: Semitones) => {
-  const newTones = [...semitones];
-  const tonesByState = (new Array(11)).fill(0).map((_, index) => {
-    return { idx: index + 1, state: semitones.includes(index + 1) };
-  });
-  const trueTones = tonesByState.filter((tone) => tone.state);
-  const falseTones = tonesByState.filter((tone) => !tone.state);
-
-  const toneToAdd = falseTones[Math.floor(Math.random() * falseTones.length)];
-  const toneToRemove = trueTones[Math.floor(Math.random() * trueTones.length)];
-
-  if (toneToAdd !== undefined && toneToRemove !== undefined) {
-    newTones.push(toneToAdd.idx);
-    newTones.splice(newTones.indexOf(toneToRemove.idx), 1);
-  }
-  return newTones.sort((a, b) => a - b);
-}
 
 /**
  * The main Pentatron component.
@@ -63,7 +46,7 @@ export const PentatonicSynth = () => {
   };
 
   const doEvolveTones = useCallback(() => {
-    setSemitones(evolveTones(semitones as Semitones));
+    setSemitones(evolveTonesNicely(semitones as Semitones));
   }, [semitones]);
 
   const handleNoteGridUpdate = useMemo(() => {
