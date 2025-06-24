@@ -27,7 +27,7 @@ const initialNoteGrid = Array.from({ length: PATTERN_LENGTH }, () => Array(PITCH
 export const PentatonicSynth = () => {
   const [root, setRoot] = useState<number>(256);
   const [bpm, setBPM] = useState<number>(90);
-  const [semitones, setSemitones] = useState<number[]>([2, 4, 7, 11]);
+  const [semitones, setSemitones] = useState<number[]>([2, 4, 7, 9]);
   const [noteGrid, setNoteGrid] = useState<boolean[][]>(initialNoteGrid);
   const [autoEvolveNoteGrid, setAutoEvolveNoteGrid] = useState<boolean>(false);
   const [autoEvolveTones, setAutoEvolveTones] = useState<boolean>(false);
